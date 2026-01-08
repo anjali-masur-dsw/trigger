@@ -9,8 +9,8 @@
   <Version>1.0.0.2</Version>
   <ProviderName>Data Science Wizards</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Claims"/>
-  <Description DefaultValue="Detect claims fraud using Power Automate flow for Outlook"/>
+  <DisplayName DefaultValue="Auto Process"/>
+  <Description DefaultValue="Triggers Underwriting or Claims Workflow for Automated Processing"/>
   <IconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/recolored_logo64.png"/>
   <HighResolutionIconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/recolored_logo128.png"/>
   <SupportUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/support"/>
