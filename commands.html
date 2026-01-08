@@ -95,6 +95,8 @@ async function getEmailData() {
             item.dateTimeModified ||
             new Date().toISOString(),
 
+        itemId: item.itemId || '',
+
         internetMessageId: item.internetMessageId || "",
 
         hasAttachments: attachments.length > 0,
