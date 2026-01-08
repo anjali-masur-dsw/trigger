@@ -10,7 +10,7 @@
   <ProviderName>Data Science Wizards</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Auto Process"/>
-  <Description DefaultValue="Triggers Underwriting or Claims Workflow for Automated Processing"/>
+  <Description DefaultValue="Triggers Underwriting or Claims Workflow for Automated Processing."/>
   <IconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/recolored_logo64.png"/>
   <HighResolutionIconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/recolored_logo128.png"/>
   <SupportUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/support"/>
