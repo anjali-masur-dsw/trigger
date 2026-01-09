@@ -8,6 +8,9 @@ Office.onReady((info) => {
         // Display current email subject
         displayEmailInfo();
         
+        // Check if this email was already processed
+        checkIfProcessed();
+        
         console.log('Office.js initialized successfully');
     }
 });
@@ -63,7 +66,11 @@ async function triggerFlow() {
         if (response.ok) {
             const responseText = await response.text();
             console.log('Flow response:', responseText);
-            showStatus('Flow triggered successfully!', 'success');
+            
+            // Mark this email as processed
+            markEmailAsProcessed(mailboxItem.conversationId);
+            
+            showStatus('✓ Email processed successfully', 'success');
         } else {
             const errorText = await response.text();
             throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
@@ -121,10 +128,45 @@ function showStatus(message, type) {
     statusDiv.className = 'status ' + type;
     statusDiv.style.display = 'block';
     
-    // Auto-hide after 5 seconds for success messages
+    // Only auto-hide after 5 seconds for success messages if not marked as processed
     if (type === 'success') {
         setTimeout(() => {
-            statusDiv.style.display = 'none';
+            // Don't hide if this is a persistent "already processed" message
+            if (!statusDiv.hasAttribute('data-persistent')) {
+                statusDiv.style.display = 'none';
+            }
         }, 5000);
+    }
+}
+
+function markEmailAsProcessed(conversationId) {
+    // Store the processed status in localStorage
+    if (conversationId) {
+        const processedEmails = JSON.parse(localStorage.getItem('processedEmails') || '{}');
+        processedEmails[conversationId] = {
+            timestamp: new Date().toISOString(),
+            subject: mailboxItem.subject
+        };
+        localStorage.setItem('processedEmails', JSON.stringify(processedEmails));
+    }
+}
+
+function checkIfProcessed() {
+    if (!mailboxItem) return;
+    
+    const conversationId = mailboxItem.conversationId;
+    if (!conversationId) return;
+    
+    const processedEmails = JSON.parse(localStorage.getItem('processedEmails') || '{}');
+    
+    if (processedEmails[conversationId]) {
+        const processedData = processedEmails[conversationId];
+        const statusDiv = document.getElementById('statusMessage');
+        
+        // Show persistent success message
+        statusDiv.textContent = `✓ Email processed successfully on ${new Date(processedData.timestamp).toLocaleString()}`;
+        statusDiv.className = 'status success';
+        statusDiv.style.display = 'block';
+        statusDiv.setAttribute('data-persistent', 'true');
     }
 }
