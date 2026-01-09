@@ -9,7 +9,7 @@
   <Version>1.0.0.2</Version>
   <ProviderName>Data Science Wizards</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Auto Process"/>
+  <DisplayName DefaultValue="Auto Process Test"/>
   <Description DefaultValue="Trigger Underwriting or Claims Workflow for Automated Processing"/>
   <IconUrl DefaultValue="https://anjali-masur-dsw.github.io/outlook/recolored_logo64.png"/>
   <HighResolutionIconUrl DefaultValue="https://anjali-masur-dsw.github.io/outlook/recolored_logo128.png"/>
