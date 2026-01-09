@@ -13,12 +13,6 @@ Office.onReady(() => {
 });
 
 /* =====================================================
-   CONFIGURATION - UPDATE THIS URL
-===================================================== */
-// Replace with your server's URL where the Flask API is running
-const API_BASE_URL = "http://10.60.6.6:5000";  // e.g., "http://192.168.1.100:5000"
-
-/* =====================================================
    RIBBON ACTION
 ===================================================== */
 async function triggerFlowFromRibbon(event) {
@@ -27,19 +21,17 @@ async function triggerFlowFromRibbon(event) {
             "progress",
             {
                 type: "progressIndicator",
-                message: "Analyzing email and uploading to OneDrive..."
+                message: "Analyzing email and sending to workflow..."
             }
         );
 
         const emailData = await getEmailData();
 
-        // Call your Python API instead of Power Automate
-        const apiUrl = `${API_BASE_URL}/process-email`;
-        const response = await fetch(apiUrl, {
+        const flowUrl =
+            "https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/89c12382226642a4907cd110e9e7ab87/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Nbz7sUIbNoHlSBt_KVnF3CFKCCf9lPYn-LbIxZsWouA";
+        const response = await fetch(flowUrl, {
             method: "POST",
-            headers: { 
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(emailData)
         });
 
@@ -50,21 +42,15 @@ async function triggerFlowFromRibbon(event) {
             throw new Error(`HTTP ${response.status}: ${err}`);
         }
 
-        const result = await response.json();
-        
-        if (result.success) {
-            Office.context.mailbox.item.notificationMessages.addAsync(
-                "success",
-                {
-                    type: "informationalMessage",
-                    message: `✓ ${result.message}`,
-                    icon: "Icon.80x80",
-                    persistent: false
-                }
-            );
-        } else {
-            throw new Error(result.error || "Processing failed");
-        }
+        Office.context.mailbox.item.notificationMessages.addAsync(
+            "success",
+            {
+                type: "informationalMessage",
+                message: "Email processed successfully ✓",
+                icon: "Icon.80x80",
+                persistent: false
+            }
+        );
 
     } catch (error) {
         console.error(error);
@@ -98,15 +84,21 @@ async function getEmailData() {
 
     return {
         triggeredAt: new Date().toISOString(),
+
         userEmail: Office.context.mailbox.userProfile.emailAddress || "",
+
         subject: subject,
         body: body,
+
         from: getSender(item),
+
         receivedDateTime:
             item.dateTimeCreated ||
             item.dateTimeModified ||
             new Date().toISOString(),
+
         internetMessageId: item.internetMessageId || "",
+
         hasAttachments: attachments.length > 0,
         attachmentCount: attachments.length,
         attachments: attachments
