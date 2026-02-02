@@ -16,8 +16,8 @@
   <SupportUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/support"/>
   
   <AppDomains>
-    <AppDomain>https://anjali-masur-dsw.github.io</AppDomain>
-    <AppDomain>https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com</AppDomain>
+    <AppDomain>anjali-masur-dsw.github.io</AppDomain>
+    <AppDomain>default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com</AppDomain>
   </AppDomains>
   
   <Hosts>
@@ -45,7 +45,7 @@
     <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
   </Rule>
   
-  <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.0" xsi:type="VersionOverridesV1_0">
     <Requirements>
       <bt:Sets DefaultMinVersion="1.5">
         <bt:Set Name="Mailbox"/>
@@ -55,7 +55,7 @@
     <Hosts>
       <Host xsi:type="MailHost">
         <DesktopFormFactor>
-          <!-- FunctionFile removed as we now use ShowTaskpane exclusively -->
+          <FunctionFile resid="Commands.Url"/>
           
           <!-- MESSAGE READ SURFACE - This is the main reading area -->
           <ExtensionPoint xsi:type="MessageReadCommandSurface">
@@ -98,6 +98,7 @@
         <bt:Image id="Icon.80x80" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo8080.png"/>
       </bt:Images>
       <bt:Urls>
+        <bt:Url id="Commands.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/commands.html"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/insurance_form.html"/>
       </bt:Urls>
       <bt:ShortStrings>
