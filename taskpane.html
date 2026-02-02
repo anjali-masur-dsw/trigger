@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Claims Fraud Detection</title>
+    <title>Power Automate Trigger</title>
     
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
     
@@ -55,10 +55,6 @@
             cursor: not-allowed;
         }
         
-        .already-processed {
-            background-color: #4CAF50;
-            cursor: default;
-        }
         
         .status {
             margin-top: 15px;
@@ -106,7 +102,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>Claims Fraud Detection</h2>
+        <h2>Power Automate Flow Trigger</h2>
         
         <div class="email-info" id="emailInfo" style="display: none;">
             <label>Current Email:</label>
@@ -115,7 +111,7 @@
         
         <div class="button-container">
             <button id="triggerButton" onclick="triggerFlow()">
-                Detect Fraud
+                Auto Process
             </button>
         </div>
         

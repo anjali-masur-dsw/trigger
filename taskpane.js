@@ -8,9 +8,6 @@ Office.onReady((info) => {
         // Display current email subject
         displayEmailInfo();
         
-        // Check if this email was already processed
-        checkIfProcessed();
-        
         console.log('Office.js initialized successfully');
     }
 });
@@ -53,7 +50,8 @@ async function triggerFlow() {
         const emailData = await getEmailData();
         
         // Replace with your Power Automate HTTP POST URL
-        const flowUrl = 'https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/89c12382226642a4907cd110e9e7ab87/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Nbz7sUIbNoHlSBt_KVnF3CFKCCf9lPYn-LbIxZsWouA';
+        const flowUrl = 'https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/98694a6fe5ce4b1d8389f23d378bd9e0/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=jEGsyOkQ2_bKCUTqufTMr99gQw9x4Q5oPphpSI7fMEA';
+        
         // Make the request to Power Automate
         const response = await fetch(flowUrl, {
             method: 'POST',
@@ -66,11 +64,7 @@ async function triggerFlow() {
         if (response.ok) {
             const responseText = await response.text();
             console.log('Flow response:', responseText);
-            
-            // Mark this email as processed
-            markEmailAsProcessed(mailboxItem.conversationId);
-            
-            showStatus('✓ Email processed successfully', 'success');
+            showStatus('Flow triggered successfully!', 'success');
         } else {
             const errorText = await response.text();
             throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
@@ -78,11 +72,11 @@ async function triggerFlow() {
         
     } catch (error) {
         console.error('Error triggering flow:', error);
-        showStatus('Failed to trigger flow: ' + error.message, 'error');
+        showStatus('Failed to Underwriting: ' + error.message, 'error');
     } finally {
         // Re-enable button
         button.disabled = false;
-        button.textContent = 'Trigger Flow';
+        button.textContent = 'Underwriting';
     }
 }
 
@@ -128,45 +122,10 @@ function showStatus(message, type) {
     statusDiv.className = 'status ' + type;
     statusDiv.style.display = 'block';
     
-    // Only auto-hide after 5 seconds for success messages if not marked as processed
+    // Auto-hide after 5 seconds for success messages
     if (type === 'success') {
         setTimeout(() => {
-            // Don't hide if this is a persistent "already processed" message
-            if (!statusDiv.hasAttribute('data-persistent')) {
-                statusDiv.style.display = 'none';
-            }
+            statusDiv.style.display = 'none';
         }, 5000);
-    }
-}
-
-function markEmailAsProcessed(conversationId) {
-    // Store the processed status in localStorage
-    if (conversationId) {
-        const processedEmails = JSON.parse(localStorage.getItem('processedEmails') || '{}');
-        processedEmails[conversationId] = {
-            timestamp: new Date().toISOString(),
-            subject: mailboxItem.subject
-        };
-        localStorage.setItem('processedEmails', JSON.stringify(processedEmails));
-    }
-}
-
-function checkIfProcessed() {
-    if (!mailboxItem) return;
-    
-    const conversationId = mailboxItem.conversationId;
-    if (!conversationId) return;
-    
-    const processedEmails = JSON.parse(localStorage.getItem('processedEmails') || '{}');
-    
-    if (processedEmails[conversationId]) {
-        const processedData = processedEmails[conversationId];
-        const statusDiv = document.getElementById('statusMessage');
-        
-        // Show persistent success message
-        statusDiv.textContent = `✓ Email processed successfully on ${new Date(processedData.timestamp).toLocaleString()}`;
-        statusDiv.className = 'status success';
-        statusDiv.style.display = 'block';
-        statusDiv.setAttribute('data-persistent', 'true');
     }
 }

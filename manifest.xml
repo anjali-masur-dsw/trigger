@@ -5,18 +5,18 @@
            xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
            xsi:type="MailApp">
   
-  <Id>12345678-1234-1234-1234-123456780002</Id>
+  <Id>12345678-1234-1234-1234-123456789012</Id>
   <Version>1.0.0.2</Version>
   <ProviderName>Data Science Wizards</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Auto Process1"/>
-  <Description DefaultValue="Trigger Underwriting or Claims Workflow for Automated Processing"/>
-  <IconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo64.png"/>
-  <HighResolutionIconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo128.png"/>
-  <SupportUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/support"/>
+  <DisplayName DefaultValue="Underwriting"/>
+  <Description DefaultValue="Predicitve Underwriting for Claims Likelihood"/>
+  <IconUrl DefaultValue="https://karan-dsw.github.io/outlook/logo64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://karan-dsw.github.io/outlook/logo128.png"/>
+  <SupportUrl DefaultValue="https://karan-dsw.github.io/outlook/support"/>
   
   <AppDomains>
-    <AppDomain>https://anjali-masur-dsw.github.io</AppDomain>
+    <AppDomain>https://karan-dsw.github.io</AppDomain>
   </AppDomains>
   
   <Hosts>
@@ -32,7 +32,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://anjali-masur-dsw.github.io/trigger/taskpane.html"/>
+        <SourceLocation DefaultValue="https://karan-dsw.github.io/outlook/taskpane.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -91,17 +91,17 @@
     
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo16.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo32.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo8080.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://karan-dsw.github.io/outlook/logo16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://karan-dsw.github.io/outlook/logo32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://karan-dsw.github.io/outlook/logo8080.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Commands.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/taskpane.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://karan-dsw.github.io/outlook/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://karan-dsw.github.io/outlook/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Flow Actions"/>
-        <bt:String id="TriggerButton.Label" DefaultValue="Auto Process"/>
+        <bt:String id="TriggerButton.Label" DefaultValue="Underwriting"/>
         <bt:String id="TriggerButton.SupertipTitle" DefaultValue="Trigger Power Automate"/>
       </bt:ShortStrings>
       <bt:LongStrings>
