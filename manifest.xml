@@ -16,7 +16,7 @@
   <SupportUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/support"/>
   
   <AppDomains>
-    <AppDomain>https://karan-dsw.github.io</AppDomain>
+    <AppDomain>https://anjali-masur-dsw.github.io</AppDomain>
   </AppDomains>
   
   <Hosts>
@@ -32,7 +32,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://anjali-masur-dsw.github.io/trigger/taskpane.html"/>
+        <SourceLocation DefaultValue="https://anjali-masur-dsw.github.io/trigger/insurance_form.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -98,7 +98,7 @@
       </bt:Images>
       <bt:Urls>
         <bt:Url id="Commands.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/insurance_form%20(1).html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/insurance_form.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Flow Actions"/>
