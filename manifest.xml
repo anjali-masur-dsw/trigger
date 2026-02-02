@@ -6,10 +6,10 @@
            xsi:type="MailApp">
   
   <Id>12345678-1234-1234-1234-123456700000</Id>
-  <Version>1.0.0.6</Version>
+  <Version>1.0.0.8</Version>
   <ProviderName>Data Science Wizards</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Underwriting"/>
+  <DisplayName DefaultValue="Process Test"/>
   <Description DefaultValue="Predicitve Underwriting for Claims Likelihood"/>
   <IconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo64.png"/>
   <HighResolutionIconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo128.png"/>
@@ -57,11 +57,16 @@
         <DesktopFormFactor>
           <FunctionFile resid="Commands.Url"/>
           
+          <!-- MESSAGE READ SURFACE - This is the main reading area -->
           <ExtensionPoint xsi:type="MessageReadCommandSurface">
+            <!-- Using TabDefault puts it in the Home tab -->
             <OfficeTab id="TabDefault">
+              <!-- Create a custom group that appears earlier in the ribbon -->
               <Group id="msgReadCustomGroup">
                 <Label resid="GroupLabel"/>
+                <!-- OverriddenByRibbonApi=false ensures it's always visible -->
                 
+                <!-- Primary action button -->
                 <Control xsi:type="Button" id="msgReadTriggerButton">
                   <Label resid="TriggerButton.Label"/>
                   <Supertip>
