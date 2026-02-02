@@ -6,7 +6,7 @@
            xsi:type="MailApp">
   
   <Id>12345678-1234-1234-1234-123456700000</Id>
-  <Version>1.0.0.8</Version>
+  <Version>1.0.0.9</Version>
   <ProviderName>Data Science Wizards</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Process Test"/>
@@ -55,7 +55,7 @@
     <Hosts>
       <Host xsi:type="MailHost">
         <DesktopFormFactor>
-          <FunctionFile resid="Commands.Url"/>
+          <FunctionFile resid="CommandsUrl"/>
           
           <!-- MESSAGE READ SURFACE - This is the main reading area -->
           <ExtensionPoint xsi:type="MessageReadCommandSurface">
@@ -79,8 +79,7 @@
                     <bt:Image size="80" resid="Icon.80x80"/>
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
-                    <TaskpaneId>InsuranceTaskpane</TaskpaneId>
-                    <SourceLocation resid="Taskpane.Url"/>
+                    <SourceLocation resid="TaskpaneUrl"/>
                   </Action>
                 </Control>
               </Group>
@@ -98,8 +97,8 @@
         <bt:Image id="Icon.80x80" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo8080.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Commands.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/insurance_form.html"/>
+        <bt:Url id="CommandsUrl" DefaultValue="https://anjali-masur-dsw.github.io/trigger/commands.html"/>
+        <bt:Url id="TaskpaneUrl" DefaultValue="https://anjali-masur-dsw.github.io/trigger/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Flow Actions"/>
