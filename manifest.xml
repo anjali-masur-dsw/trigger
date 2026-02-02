@@ -77,8 +77,9 @@
                     <bt:Image size="32" resid="Icon.32x32"/>
                     <bt:Image size="80" resid="Icon.80x80"/>
                   </Icon>
-                  <Action xsi:type="ExecuteFunction">
-                    <FunctionName>triggerFlowFromRibbon</FunctionName>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>MyTaskPaneID</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url"/>
                   </Action>
                 </Control>
               </Group>
@@ -97,7 +98,7 @@
       </bt:Images>
       <bt:Urls>
         <bt:Url id="Commands.Url" DefaultValue="https://karan-dsw.github.io/outlook/commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://karan-dsw.github.io/outlook/taskpane.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://karan-dsw.github.io/outlook/insurance_form%20(1).html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Flow Actions"/>
