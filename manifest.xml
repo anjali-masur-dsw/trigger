@@ -5,8 +5,8 @@
            xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
            xsi:type="MailApp">
   
-  <Id>12345678-1234-1234-1234-123456789011</Id>
-  <Version>1.0.0.2</Version>
+  <Id>5eb560b4-1c6e-4734-b26a-9f56b107077a</Id>
+  <Version>1.0.0.3</Version>
   <ProviderName>Data Science Wizards</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Underwriting"/>
@@ -17,6 +17,7 @@
   
   <AppDomains>
     <AppDomain>https://anjali-masur-dsw.github.io</AppDomain>
+    <AppDomain>https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com</AppDomain>
   </AppDomains>
   
   <Hosts>
@@ -54,7 +55,7 @@
     <Hosts>
       <Host xsi:type="MailHost">
         <DesktopFormFactor>
-          <FunctionFile resid="Commands.Url"/>
+          <!-- FunctionFile removed as we now use ShowTaskpane exclusively -->
           
           <!-- MESSAGE READ SURFACE - This is the main reading area -->
           <ExtensionPoint xsi:type="MessageReadCommandSurface">
@@ -97,7 +98,6 @@
         <bt:Image id="Icon.80x80" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo8080.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Commands.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/commands.html"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/insurance_form.html"/>
       </bt:Urls>
       <bt:ShortStrings>
