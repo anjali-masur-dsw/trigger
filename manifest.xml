@@ -4,27 +4,32 @@
            xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
            xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
            xsi:type="MailApp">
-  <Id>d7c9a6f1-3453-4e9a-9e2c-2b8e3e4f5a6b</Id>
-  <Version>1.0.0.5</Version>
+  
+  <Id>12345678-1234-1234-1234-123456789012</Id>
+  <Version>1.0.0.6</Version>
   <ProviderName>Data Science Wizards</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Underwriting"/>
-  <Description DefaultValue="Insurance Underwriting Assistant"/>
+  <Description DefaultValue="Predicitve Underwriting for Claims Likelihood"/>
   <IconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo64.png"/>
   <HighResolutionIconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo128.png"/>
   <SupportUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/support"/>
+  
   <AppDomains>
     <AppDomain>https://anjali-masur-dsw.github.io</AppDomain>
     <AppDomain>https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com</AppDomain>
   </AppDomains>
+  
   <Hosts>
     <Host Name="Mailbox"/>
   </Hosts>
+  
   <Requirements>
     <Sets>
       <Set Name="Mailbox" MinVersion="1.1"/>
     </Sets>
   </Requirements>
+  
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
@@ -33,60 +38,71 @@
       </DesktopSettings>
     </Form>
   </FormSettings>
-  <Permissions>ReadWriteMailbox</Permissions>
-  <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
   
-  <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides/1.0" xsi:type="VersionOverridesV1_0">
+  <Permissions>ReadWriteMailbox</Permissions>
+  
+  <Rule xsi:type="RuleCollection" Mode="Or">
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
+  </Rule>
+  
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
     <Requirements>
       <bt:Sets DefaultMinVersion="1.5">
         <bt:Set Name="Mailbox"/>
       </bt:Sets>
     </Requirements>
+    
     <Hosts>
       <Host xsi:type="MailHost">
         <DesktopFormFactor>
           <FunctionFile resid="Commands.Url"/>
+          
           <ExtensionPoint xsi:type="MessageReadCommandSurface">
             <OfficeTab id="TabDefault">
-              <Group id="msgReadGroup">
+              <Group id="msgReadCustomGroup">
                 <Label resid="GroupLabel"/>
+                
                 <Control xsi:type="Button" id="msgReadTriggerButton">
                   <Label resid="TriggerButton.Label"/>
                   <Supertip>
-                    <Title resid="TriggerButton.Label"/>
-                    <Description resid="TriggerButton.Desc"/>
+                    <Title resid="TriggerButton.SupertipTitle"/>
+                    <Description resid="TriggerButton.SupertipText"/>
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="Icon16"/>
-                    <bt:Image size="32" resid="Icon32"/>
-                    <bt:Image size="80" resid="Icon80"/>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>InsuranceTaskpane</TaskpaneId>
                     <SourceLocation resid="Taskpane.Url"/>
                   </Action>
                 </Control>
               </Group>
             </OfficeTab>
           </ExtensionPoint>
+          
         </DesktopFormFactor>
       </Host>
     </Hosts>
+    
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon16" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo16.png"/>
-        <bt:Image id="Icon32" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo32.png"/>
-        <bt:Image id="Icon80" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo8080.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo8080.png"/>
       </bt:Images>
       <bt:Urls>
         <bt:Url id="Commands.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/commands.html"/>
         <bt:Url id="Taskpane.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/insurance_form.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GroupLabel" DefaultValue="Underwriting"/>
+        <bt:String id="GroupLabel" DefaultValue="Flow Actions"/>
         <bt:String id="TriggerButton.Label" DefaultValue="Underwriting"/>
+        <bt:String id="TriggerButton.SupertipTitle" DefaultValue="Trigger Power Automate"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="TriggerButton.Desc" DefaultValue="Open the underwriting form for this email."/>
+        <bt:String id="TriggerButton.SupertipText" DefaultValue="Analyze this email and trigger the Power Automate workflow for routing"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
