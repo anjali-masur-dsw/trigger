@@ -318,7 +318,7 @@
 
                 <div class="form-section">
                     <label class="form-label" for="brokerEmail">
-                        Broker Email <span class="required">*</span>
+                        Sender's Email <span class="required">*</span>
                     </label>
                     <input type="email" id="brokerEmail" name="brokerEmail" class="form-input"
                         placeholder="broker@example.com" required>
@@ -326,7 +326,7 @@
 
                 <div class="form-section">
                     <label class="form-label" for="brokerName">
-                        Broker Name <span class="required">*</span>
+                        Sender's Name <span class="required">*</span>
                     </label>
                     <input type="text" id="brokerName" name="brokerName" class="form-input"
                         placeholder="Enter broker name" required>
@@ -334,7 +334,7 @@
 
                 <div class="form-section">
                     <label class="form-label" for="underwriterEmail">
-                        Underwriter Email <span class="required">*</span>
+                        Receiver's Email <span class="required">*</span>
                     </label>
                     <input type="email" id="underwriterEmail" name="underwriterEmail" class="form-input"
                         placeholder="underwriter@example.com" required>
@@ -342,7 +342,7 @@
 
                 <div class="form-section">
                     <label class="form-label" for="underwriterName">
-                        Underwriter Name <span class="required">*</span>
+                        Receiver's Name <span class="required">*</span>
                     </label>
                     <input type="text" id="underwriterName" name="underwriterName" class="form-input"
                         placeholder="Enter underwriter name" required>
@@ -358,23 +358,39 @@
 
                 <div class="form-section">
                     <label class="form-label" for="agencyName">
-                        Broker Agency Name <span class="required">*</span>
+                        Agency Name
                     </label>
                     <input type="text" id="agencyName" name="agencyName" class="form-input"
-                        placeholder="Enter agency name" required>
+                        placeholder="Enter agency name">
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="agencyId">
-                        Broker/Agency ID <span class="required">*</span>
+                        Agency/Broker ID
                     </label>
                     <input type="text" id="agencyId" name="agencyId" class="form-input"
-                        placeholder="Enter broker or agency ID" required>
+                        placeholder="Enter broker or agency ID">
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="emailSummary">
+                        Email Summary
+                    </label>
+                    <textarea id="emailSummary" name="emailSummary" class="form-input" rows="4"
+                        placeholder="Summary of the email content"></textarea>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="comments">
+                        Comments
+                    </label>
+                    <textarea id="comments" name="comments" class="form-input" rows="3"
+                        placeholder="Additional comments"></textarea>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="timestamp">
-                        Timestamp <span class="required">*</span>
+                        Timestamp
                     </label>
                     <input type="text" id="timestamp" name="timestamp" class="form-input" disabled readonly>
                     <p class="input-hint">Auto-generated timestamp</p>
@@ -410,12 +426,18 @@
                 document.getElementById('brokerName').value = item.sender.displayName;
             }
 
-            // Subject used as potential identifier
-            item.subject.getAsync((result) => {
+            // Prefill Email Summary from body
+            item.body.getAsync(Office.CoercionType.Text, (result) => {
                 if (result.status === Office.AsyncResultStatus.Succeeded) {
-                    console.log("Subject:", result.value);
+                    const body = result.value;
+                    // Simple summary: first 200 characters or first paragraph
+                    const summary = body.split('\n')[0].substring(0, 200);
+                    document.getElementById('emailSummary').value = summary;
                 }
             });
+
+            // Subject is a property in Read mode
+            console.log("Subject:", item.subject);
         }
 
         // Logic to trigger Power Automate flow
@@ -460,23 +482,23 @@
                     userEmail: Office.context.mailbox.userProfile.emailAddress || "",
                     internetMessageId: item.internetMessageId || "",
                     itemId: item.itemId || "",
-                    conversationId: item.conversationId || ""
+                    conversationId: item.conversationId || "",
+                    subject: item.subject || ""
                 };
 
-                item.subject.getAsync(subRes => {
-                    data.subject = subRes.value;
-                    item.body.getAsync(Office.CoercionType.Text, bodyRes => {
-                        data.body = bodyRes.value;
-                        // Attachments metadata
-                        data.attachments = item.attachments.map(att => ({
-                            name: att.name,
-                            contentType: att.contentType,
-                            size: att.size,
-                            id: att.id
-                        }));
-                        data.hasAttachments = data.attachments.length > 0;
-                        resolve(data);
-                    });
+                // Body text
+                item.body.getAsync(Office.CoercionType.Text, bodyRes => {
+                    data.body = bodyRes.status === Office.AsyncResultStatus.Succeeded ? bodyRes.value : "";
+
+                    // Attachments metadata
+                    data.attachments = (item.attachments || []).map(att => ({
+                        name: att.name,
+                        contentType: att.contentType,
+                        size: att.size,
+                        id: att.id
+                    }));
+                    data.hasAttachments = data.attachments.length > 0;
+                    resolve(data);
                 });
             });
         }
@@ -492,6 +514,8 @@
                 policyNumber: params.get('policyNumber') || '',
                 agencyName: params.get('agencyName') || '',
                 agencyId: params.get('agencyId') || '',
+                emailSummary: params.get('emailSummary') || '',
+                comments: params.get('comments') || '',
                 timestamp: params.get('timestamp') || ''
             };
         }
@@ -505,6 +529,8 @@
             if (params.policyNumber) document.getElementById('policyNumber').value = params.policyNumber;
             if (params.agencyName) document.getElementById('agencyName').value = params.agencyName;
             if (params.agencyId) document.getElementById('agencyId').value = params.agencyId;
+            if (params.emailSummary) document.getElementById('emailSummary').value = params.emailSummary;
+            if (params.comments) document.getElementById('comments').value = params.comments;
 
             const timestampField = document.getElementById('timestamp');
             if (params.timestamp) {
@@ -528,6 +554,8 @@
                 policyNumber: document.getElementById('policyNumber').value,
                 agencyName: document.getElementById('agencyName').value,
                 agencyId: document.getElementById('agencyId').value,
+                emailSummary: document.getElementById('emailSummary').value,
+                comments: document.getElementById('comments').value,
                 timestamp: document.getElementById('timestamp').value
             };
             console.log('Form Data:', formData);
