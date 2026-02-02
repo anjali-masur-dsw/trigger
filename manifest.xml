@@ -6,7 +6,7 @@
            xsi:type="MailApp">
   
   <Id>12345678-1234-1234-1234-123456700000</Id>
-  <Version>1.0.1.3</Version>
+  <Version>1.0.1.4</Version>
   <ProviderName>Data Science Wizards</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Insurance Underwriting"/>
@@ -33,7 +33,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://anjali-masur-dsw.github.io/trigger/taskpane.html"/>
+        <SourceLocation DefaultValue="https://anjali-masur-dsw.github.io/trigger/insurance_form.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -89,7 +89,7 @@
         <bt:Image id="Icon80" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo8080.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="TaskpaneUrl" DefaultValue="https://anjali-masur-dsw.github.io/trigger/taskpane.html"/>
+        <bt:Url id="TaskpaneUrl" DefaultValue="https://anjali-masur-dsw.github.io/trigger/insurance_form.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Underwriting"/>
