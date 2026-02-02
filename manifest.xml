@@ -5,15 +5,15 @@
            xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
            xsi:type="MailApp">
   
-  <Id>12345678-1234-1234-1234-123456700000</Id>
-  <Version>1.0.0.9</Version>
+  <Id>5eb560b4-1c6e-4734-b26a-9f56b107077a</Id>
+  <Version>1.0.1.2</Version>
   <ProviderName>Data Science Wizards</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Process Test"/>
-  <Description DefaultValue="Predicitve Underwriting for Claims Likelihood"/>
+  <DisplayName DefaultValue="Insurance Underwriting"/>
+  <Description DefaultValue="Process insurance details directly from your email."/>
+  
   <IconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo64.png"/>
   <HighResolutionIconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo128.png"/>
-  <SupportUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/support"/>
   
   <AppDomains>
     <AppDomain>https://anjali-masur-dsw.github.io</AppDomain>
@@ -33,7 +33,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://anjali-masur-dsw.github.io/trigger/insurance_form.html"/>
+        <SourceLocation DefaultValue="https://anjali-masur-dsw.github.io/trigger/taskpane.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -57,56 +57,49 @@
         <DesktopFormFactor>
           <FunctionFile resid="CommandsUrl"/>
           
-          <!-- MESSAGE READ SURFACE - This is the main reading area -->
           <ExtensionPoint xsi:type="MessageReadCommandSurface">
-            <!-- Using TabDefault puts it in the Home tab -->
             <OfficeTab id="TabDefault">
-              <!-- Create a custom group that appears earlier in the ribbon -->
-              <Group id="msgReadCustomGroup">
+              <Group id="msgReadGroup777">
                 <Label resid="GroupLabel"/>
-                <!-- OverriddenByRibbonApi=false ensures it's always visible -->
-                
-                <!-- Primary action button -->
-                <Control xsi:type="Button" id="msgReadTriggerButton">
-                  <Label resid="TriggerButton.Label"/>
+                <Control xsi:type="Button" id="msgReadBtn777">
+                  <Label resid="ButtonTitle"/>
                   <Supertip>
-                    <Title resid="TriggerButton.SupertipTitle"/>
-                    <Description resid="TriggerButton.SupertipText"/>
+                    <Title resid="ButtonTitle"/>
+                    <Description resid="ButtonDesc"/>
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="Icon.16x16"/>
-                    <bt:Image size="32" resid="Icon.32x32"/>
-                    <bt:Image size="80" resid="Icon.80x80"/>
+                    <bt:Image size="16" resid="Icon16"/>
+                    <bt:Image size="32" resid="Icon32"/>
+                    <bt:Image size="80" resid="Icon80"/>
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>InsurancePane</TaskpaneId>
                     <SourceLocation resid="TaskpaneUrl"/>
                   </Action>
                 </Control>
               </Group>
             </OfficeTab>
           </ExtensionPoint>
-          
         </DesktopFormFactor>
       </Host>
     </Hosts>
     
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon.16x16" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo16.png"/>
-        <bt:Image id="Icon.32x32" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo32.png"/>
-        <bt:Image id="Icon.80x80" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo8080.png"/>
+        <bt:Image id="Icon16" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo16.png"/>
+        <bt:Image id="Icon32" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo32.png"/>
+        <bt:Image id="Icon80" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo8080.png"/>
       </bt:Images>
       <bt:Urls>
         <bt:Url id="CommandsUrl" DefaultValue="https://anjali-masur-dsw.github.io/trigger/commands.html"/>
         <bt:Url id="TaskpaneUrl" DefaultValue="https://anjali-masur-dsw.github.io/trigger/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GroupLabel" DefaultValue="Flow Actions"/>
-        <bt:String id="TriggerButton.Label" DefaultValue="Underwriting"/>
-        <bt:String id="TriggerButton.SupertipTitle" DefaultValue="Trigger Power Automate"/>
+        <bt:String id="GroupLabel" DefaultValue="Underwriting"/>
+        <bt:String id="ButtonTitle" DefaultValue="Process Insurance"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="TriggerButton.SupertipText" DefaultValue="Analyze this email and trigger the Power Automate workflow for routing"/>
+        <bt:String id="ButtonDesc" DefaultValue="Open the insurance processing panel for this email."/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
