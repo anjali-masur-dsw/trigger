@@ -5,8 +5,8 @@
            xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
            xsi:type="MailApp">
   
-  <Id>5eb560b4-1c6e-4734-b26a-9f56b107077a</Id>
-  <Version>1.0.1.2</Version>
+  <Id>12345678-1234-1234-1234-123456700000</Id>
+  <Version>1.0.1.3</Version>
   <ProviderName>Data Science Wizards</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Insurance Underwriting"/>
@@ -16,8 +16,8 @@
   <HighResolutionIconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo128.png"/>
   
   <AppDomains>
-    <AppDomain>https://anjali-masur-dsw.github.io</AppDomain>
-    <AppDomain>https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com</AppDomain>
+    <AppDomain>anjali-masur-dsw.github.io</AppDomain>
+    <AppDomain>default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com</AppDomain>
   </AppDomains>
   
   <Hosts>
@@ -41,9 +41,7 @@
   
   <Permissions>ReadWriteMailbox</Permissions>
   
-  <Rule xsi:type="RuleCollection" Mode="Or">
-    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
-  </Rule>
+  <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
   
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
     <Requirements>
@@ -55,13 +53,14 @@
     <Hosts>
       <Host xsi:type="MailHost">
         <DesktopFormFactor>
-          <FunctionFile resid="CommandsUrl"/>
+          <!-- Using taskpane.html as the FunctionFile is a common requirement for ribbon buttons to activate -->
+          <FunctionFile resid="TaskpaneUrl"/>
           
           <ExtensionPoint xsi:type="MessageReadCommandSurface">
             <OfficeTab id="TabDefault">
-              <Group id="msgReadGroup777">
+              <Group id="msgReadGroupInsurance">
                 <Label resid="GroupLabel"/>
-                <Control xsi:type="Button" id="msgReadBtn777">
+                <Control xsi:type="Button" id="msgReadOpenInsurance">
                   <Label resid="ButtonTitle"/>
                   <Supertip>
                     <Title resid="ButtonTitle"/>
@@ -73,7 +72,6 @@
                     <bt:Image size="80" resid="Icon80"/>
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
-                    <TaskpaneId>InsurancePane</TaskpaneId>
                     <SourceLocation resid="TaskpaneUrl"/>
                   </Action>
                 </Control>
@@ -91,7 +89,6 @@
         <bt:Image id="Icon80" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo8080.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="CommandsUrl" DefaultValue="https://anjali-masur-dsw.github.io/trigger/commands.html"/>
         <bt:Url id="TaskpaneUrl" DefaultValue="https://anjali-masur-dsw.github.io/trigger/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
