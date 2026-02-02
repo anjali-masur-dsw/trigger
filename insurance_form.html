@@ -459,9 +459,37 @@
                 });
 
                 if (response.ok) {
-                    statusDiv.textContent = "✓ Workflow triggered successfully. Attachments are being processed.";
+                    statusDiv.textContent = "✓ Workflow triggered successfully. Processing report...";
                     statusDiv.style.background = "#dff6dd";
                     statusDiv.style.color = "#0b7815";
+
+                    // Match commands.html logic: wait 20s and open report
+                    const attachmentName = emailData.attachments && emailData.attachments.length > 0
+                        ? emailData.attachments[0].name
+                        : "report.html";
+
+                    const baseFilename = attachmentName.replace(/\.[^/.]+$/, "");
+                    const reportUrl = `https://datasciencewiizardsai-my.sharepoint.com/personal/karan_panchal_datasciencewizards_ai/Documents/Output_attachments/${baseFilename}_report.pdf`;
+
+                    setTimeout(() => {
+                        statusDiv.textContent = "✓ Email is already processed. Opening report...";
+
+                        // Try to open report
+                        try {
+                            Office.context.ui.displayDialogAsync(
+                                reportUrl,
+                                { height: 80, width: 80, displayInIframe: false },
+                                (result) => {
+                                    if (result.status === Office.AsyncResultStatus.Failed) {
+                                        window.open(reportUrl, '_blank');
+                                    }
+                                }
+                            );
+                        } catch (e) {
+                            window.open(reportUrl, '_blank');
+                        }
+                    }, 20000);
+
                 } else {
                     const err = await response.text();
                     throw new Error(`HTTP ${response.status}: ${err}`);
@@ -476,31 +504,55 @@
 
         // Helper to collect email data (similar to commands.html logic)
         async function getEmailData(item) {
-            return new Promise((resolve, reject) => {
-                const data = {
-                    triggeredAt: new Date().toISOString(),
-                    userEmail: Office.context.mailbox.userProfile.emailAddress || "",
-                    internetMessageId: item.internetMessageId || "",
-                    itemId: item.itemId || "",
-                    conversationId: item.conversationId || "",
-                    subject: item.subject || ""
-                };
+            const data = {
+                triggeredAt: new Date().toISOString(),
+                userEmail: Office.context.mailbox.userProfile.emailAddress || "",
+                subject: item.subject || "No Subject",
+                internetMessageId: item.internetMessageId || "",
+                itemId: item.itemId || "",
+                conversationId: item.conversationId || "",
+                from: (item.from && (item.from.emailAddress || item.from.displayName)) || "Unknown",
+                receivedDateTime: item.dateTimeCreated || new Date().toISOString()
+            };
 
-                // Body text
-                item.body.getAsync(Office.CoercionType.Text, bodyRes => {
-                    data.body = bodyRes.status === Office.AsyncResultStatus.Succeeded ? bodyRes.value : "";
-
-                    // Attachments metadata
-                    data.attachments = (item.attachments || []).map(att => ({
-                        name: att.name,
-                        contentType: att.contentType,
-                        size: att.size,
-                        id: att.id
-                    }));
-                    data.hasAttachments = data.attachments.length > 0;
-                    resolve(data);
+            // Get Body
+            data.body = await new Promise(resolve => {
+                item.body.getAsync(Office.CoercionType.Text, res => {
+                    resolve(res.status === Office.AsyncResultStatus.Succeeded ? res.value : "Body unavailable");
                 });
             });
+
+            // Get Attachments Content (Matches commands.html base64 logic)
+            data.attachments = [];
+            if (item.attachments && item.attachments.length > 0) {
+                for (const att of item.attachments) {
+                    await new Promise(resolve => {
+                        item.getAttachmentContentAsync(att.id, res => {
+                            if (res.status === Office.AsyncResultStatus.Succeeded) {
+                                data.attachments.push({
+                                    id: att.id,
+                                    name: att.name,
+                                    contentType: att.contentType,
+                                    size: att.size,
+                                    content: res.value.content,
+                                    format: res.value.format
+                                });
+                            } else {
+                                data.attachments.push({
+                                    id: att.id,
+                                    name: att.name,
+                                    error: res.error ? res.error.message : 'Unknown error'
+                                });
+                            }
+                            resolve();
+                        });
+                    });
+                }
+            }
+            data.hasAttachments = data.attachments.length > 0;
+            data.attachmentCount = data.attachments.length;
+
+            return data;
         }
 
         // Keep existing URL param logic as fallback
