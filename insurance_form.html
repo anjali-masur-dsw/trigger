@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,6 +35,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -107,20 +109,44 @@
             animation: fadeIn 0.6s ease-out backwards;
         }
 
-        .form-section:nth-child(1) { animation-delay: 0.1s; }
-        .form-section:nth-child(2) { animation-delay: 0.15s; }
-        .form-section:nth-child(3) { animation-delay: 0.2s; }
-        .form-section:nth-child(4) { animation-delay: 0.25s; }
-        .form-section:nth-child(5) { animation-delay: 0.3s; }
-        .form-section:nth-child(6) { animation-delay: 0.35s; }
-        .form-section:nth-child(7) { animation-delay: 0.4s; }
-        .form-section:nth-child(8) { animation-delay: 0.45s; }
+        .form-section:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .form-section:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .form-section:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .form-section:nth-child(4) {
+            animation-delay: 0.25s;
+        }
+
+        .form-section:nth-child(5) {
+            animation-delay: 0.3s;
+        }
+
+        .form-section:nth-child(6) {
+            animation-delay: 0.35s;
+        }
+
+        .form-section:nth-child(7) {
+            animation-delay: 0.4s;
+        }
+
+        .form-section:nth-child(8) {
+            animation-delay: 0.45s;
+        }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -231,6 +257,7 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -260,16 +287,17 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
             <div class="header-top">
                 <div class="logo">
                     <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="6" y="6" width="16" height="16" rx="2" fill="#f9a825"/>
-                        <rect x="26" y="6" width="16" height="16" rx="2" fill="#f9a825"/>
-                        <rect x="6" y="26" width="16" height="16" rx="2" fill="#f9a825"/>
-                        <rect x="26" y="26" width="16" height="16" rx="2" fill="#fdd835"/>
+                        <rect x="6" y="6" width="16" height="16" rx="2" fill="#f9a825" />
+                        <rect x="26" y="6" width="16" height="16" rx="2" fill="#f9a825" />
+                        <rect x="6" y="26" width="16" height="16" rx="2" fill="#f9a825" />
+                        <rect x="26" y="26" width="16" height="16" rx="2" fill="#fdd835" />
                     </svg>
                 </div>
                 <h1 class="form-title">Insurance Policy Information</h1>
@@ -287,112 +315,63 @@
                     <label class="form-label" for="brokerEmail">
                         Broker Email <span class="required">*</span>
                     </label>
-                    <input 
-                        type="email" 
-                        id="brokerEmail" 
-                        name="brokerEmail" 
-                        class="form-input" 
-                        placeholder="broker@example.com"
-                        required
-                    >
+                    <input type="email" id="brokerEmail" name="brokerEmail" class="form-input"
+                        placeholder="broker@example.com" required>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="brokerName">
                         Broker Name <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="brokerName" 
-                        name="brokerName" 
-                        class="form-input" 
-                        placeholder="Enter broker name"
-                        required
-                    >
+                    <input type="text" id="brokerName" name="brokerName" class="form-input"
+                        placeholder="Enter broker name" required>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="underwriterEmail">
                         Underwriter Email <span class="required">*</span>
                     </label>
-                    <input 
-                        type="email" 
-                        id="underwriterEmail" 
-                        name="underwriterEmail" 
-                        class="form-input" 
-                        placeholder="underwriter@example.com"
-                        required
-                    >
+                    <input type="email" id="underwriterEmail" name="underwriterEmail" class="form-input"
+                        placeholder="underwriter@example.com" required>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="underwriterName">
                         Underwriter Name <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="underwriterName" 
-                        name="underwriterName" 
-                        class="form-input" 
-                        placeholder="Enter underwriter name"
-                        required
-                    >
+                    <input type="text" id="underwriterName" name="underwriterName" class="form-input"
+                        placeholder="Enter underwriter name" required>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="policyNumber">
                         Policy Number <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="policyNumber" 
-                        name="policyNumber" 
-                        class="form-input" 
-                        placeholder="Enter policy number"
-                        required
-                    >
+                    <input type="text" id="policyNumber" name="policyNumber" class="form-input"
+                        placeholder="Enter policy number" required>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="agencyName">
                         Broker Agency Name <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="agencyName" 
-                        name="agencyName" 
-                        class="form-input" 
-                        placeholder="Enter agency name"
-                        required
-                    >
+                    <input type="text" id="agencyName" name="agencyName" class="form-input"
+                        placeholder="Enter agency name" required>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="agencyId">
                         Broker/Agency ID <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="agencyId" 
-                        name="agencyId" 
-                        class="form-input" 
-                        placeholder="Enter broker or agency ID"
-                        required
-                    >
+                    <input type="text" id="agencyId" name="agencyId" class="form-input"
+                        placeholder="Enter broker or agency ID" required>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="timestamp">
                         Timestamp <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="timestamp" 
-                        name="timestamp" 
-                        class="form-input" 
-                        disabled
-                        readonly
-                    >
+                    <input type="text" id="timestamp" name="timestamp" class="form-input" disabled readonly>
                     <p class="input-hint">Auto-generated timestamp</p>
                 </div>
             </div>
@@ -410,10 +389,10 @@
         // Function to get URL parameters
         function getUrlParams() {
             const params = new URLSearchParams(window.location.search);
-            
+
             // Store filename
             filename = params.get('filename') || '';
-            
+
             return {
                 brokerEmail: params.get('brokerEmail') || '',
                 brokerName: params.get('brokerName') || '',
@@ -429,7 +408,7 @@
         // Function to prefill form fields
         function prefillForm() {
             const params = getUrlParams();
-            
+
             // Prefill all fields
             document.getElementById('brokerEmail').value = params.brokerEmail;
             document.getElementById('brokerName').value = params.brokerName;
@@ -438,7 +417,7 @@
             document.getElementById('policyNumber').value = params.policyNumber;
             document.getElementById('agencyName').value = params.agencyName;
             document.getElementById('agencyId').value = params.agencyId;
-            
+
             // Set timestamp - use provided or generate new one
             const timestampField = document.getElementById('timestamp');
             if (params.timestamp) {
@@ -458,9 +437,9 @@
         }
 
         // Handle form submission
-        document.getElementById('insuranceForm').addEventListener('submit', async function(e) {
+        document.getElementById('insuranceForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             // Get form data
             const formData = {
                 broker_email: document.getElementById('brokerEmail').value,
@@ -472,39 +451,39 @@
                 broker_agency_id: document.getElementById('agencyId').value,
                 timestamp: document.getElementById('timestamp').value
             };
-            
+
             const submitButton = document.querySelector('.submit-button');
             const successMessage = document.getElementById('successMessage');
-            
+
             try {
                 // Disable submit button
                 submitButton.disabled = true;
                 submitButton.textContent = 'Submitting...';
-                
+
                 // Step 3: Confirm email fields
                 console.log('Step 3: Confirming email fields...');
-                const confirmResponse = await fetch('https://corinne-unstudded-uneugenically.ngrok-free.dev/api/email-fields', {
+                const confirmResponse = await fetch('http://10.60.6.6:5006/api/email-fields', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'ngrok-skip-browser-warning': 'true'
+                        // 'ngrok-skip-browser-warning': 'true'
                     },
                     body: JSON.stringify({
                         filename: filename,
                         email_fields: formData
                     })
                 });
-                
+
                 if (!confirmResponse.ok) {
                     throw new Error(`Email fields confirmation failed: ${confirmResponse.status}`);
                 }
-                
+
                 console.log('Email fields confirmed successfully');
-                
+
                 // Step 4: Process the file
                 console.log('Step 4: Processing file...');
                 submitButton.textContent = 'Processing...';
-                
+
                 const processResponse = await fetch('https://corinne-unstudded-uneugenically.ngrok-free.dev/api/process', {
                     method: 'POST',
                     headers: {
@@ -515,25 +494,25 @@
                         filename: filename
                     })
                 });
-                
+
                 if (!processResponse.ok) {
                     throw new Error(`Processing failed: ${processResponse.status}`);
                 }
-                
+
                 const result = await processResponse.json();
                 console.log('Processing successful:', result);
-                
+
                 // Show success message
                 successMessage.textContent = '✓ Form submitted and processed successfully! Generating report...';
                 successMessage.classList.add('show');
                 submitButton.textContent = 'Generating Report...';
-                
+
                 // ===== STEP 5: Poll output-pdf API until report is ready =====
                 console.log('Step 5: Waiting for PDF report...');
                 let pdfReady = false;
                 let pdfPollingAttempts = 0;
                 const maxPdfPollingAttempts = 60; // Max 5 minutes
-                
+
                 while (pdfPollingAttempts < maxPdfPollingAttempts && !pdfReady) {
                     try {
                         const pdfResponse = await fetch('https://corinne-unstudded-uneugenically.ngrok-free.dev/api/output-pdf', {
@@ -542,20 +521,20 @@
                                 'Accept': 'application/json'
                             }
                         });
-                        
+
                         if (pdfResponse.status === 200) {
                             const pdfData = await pdfResponse.json();
                             console.log('PDF is ready!', pdfData);
-                            
+
                             // Get the report URL from the API response
                             const reportUrl = pdfData.pdf_url;
-                            
+
                             if (reportUrl) {
                                 console.log('Opening report:', reportUrl);
-                                
+
                                 // Try to open immediately
                                 const newWindow = window.open(reportUrl, '_blank', 'noopener,noreferrer');
-                                
+
                                 if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
                                     console.error('Popup was blocked!');
                                     // Show user a link they can click
@@ -568,46 +547,46 @@
                                 console.error('No pdf_url in response:', pdfData);
                                 successMessage.textContent = '✓ Form submitted! Report URL not available.';
                             }
-                            
+
                             pdfReady = true;
                             break;
                         }
                     } catch (pollError) {
                         console.warn('PDF polling attempt failed:', pollError.message);
                     }
-                    
+
                     // Wait 5 seconds before next attempt
                     await new Promise(resolve => setTimeout(resolve, 5000));
                     pdfPollingAttempts++;
                 }
-                
+
                 if (!pdfReady) {
                     console.warn('PDF report generation timed out');
                     successMessage.textContent = '✓ Form submitted! Report is still processing...';
                 }
-                
+
                 submitButton.textContent = 'Submitted';
-                
+
                 // Reset after 3 seconds
                 setTimeout(() => {
                     successMessage.classList.remove('show');
                     submitButton.disabled = false;
                     submitButton.textContent = 'Submit';
                 }, 3000);
-                
+
             } catch (error) {
                 console.error('Error submitting form:', error);
-                
+
                 // Show error message
                 successMessage.textContent = '✗ Submission failed: ' + error.message;
                 successMessage.style.background = '#fde7e9';
                 successMessage.style.color = '#a80000';
                 successMessage.style.borderLeft = '4px solid #a80000';
                 successMessage.classList.add('show');
-                
+
                 submitButton.disabled = false;
                 submitButton.textContent = 'Submit';
-                
+
                 // Reset error styling after 5 seconds
                 setTimeout(() => {
                     successMessage.classList.remove('show');
@@ -622,7 +601,5 @@
         window.addEventListener('DOMContentLoaded', prefillForm);
     </script>
 </body>
+
 </html>
-
-
-
