@@ -1,126 +1,434 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Power Automate Trigger</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Underwriting Form</title>
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
+        * {
             margin: 0;
-            background-color: #f5f5f5;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
         }
 
-        h2 {
-            color: #333;
-            margin-top: 0;
+        #loadingContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
         }
 
-        .button-container {
-            margin: 20px 0;
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #f9a825;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        button {
-            background-color: #0078d4;
-            color: white;
-            border: none;
-            padding: 12px 24px;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
             font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
+            color: #333;
+            text-align: center;
+        }
+
+        .loading-subtext {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+
+        #formContainer {
+            display: none;
+            background: white;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f9a825 0%, #f57f17 100%);
+            padding: 30px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+        }
+
+        .logo svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .form-title {
+            color: white;
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .form-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px;
+            margin-left: 65px;
+        }
+
+        .form-body {
+            padding: 30px 20px;
+        }
+
+        .form-section {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #323130;
+            margin-bottom: 6px;
+        }
+
+        .required {
+            color: #d13438;
+            margin-left: 2px;
+        }
+
+        .form-input {
             width: 100%;
-            transition: background-color 0.3s;
+            padding: 10px 12px;
+            font-size: 13px;
+            font-family: 'Segoe UI', sans-serif;
+            border: 1px solid #d1d1d1;
+            border-radius: 4px;
+            background: white;
+            transition: all 0.2s ease;
+            outline: none;
         }
 
-        button:hover {
-            background-color: #106ebe;
+        .form-input:hover {
+            border-color: #a19f9d;
         }
 
-        button:disabled {
-            background-color: #ccc;
+        .form-input:focus {
+            border-color: #f9a825;
+            box-shadow: 0 0 0 1px #f9a825;
+        }
+
+        .form-input:disabled {
+            background: #f3f2f1;
+            color: #605e5c;
             cursor: not-allowed;
         }
 
-
-        .status {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 4px;
-            display: none;
+        .input-hint {
+            font-size: 11px;
+            color: #605e5c;
+            margin-top: 4px;
         }
 
-        .status.success {
-            background-color: #dff6dd;
-            color: #107c10;
-            border: 1px solid #107c10;
+        .submit-section {
+            padding: 20px;
+            background: #faf9f8;
+            border-top: 1px solid #edebe9;
+            display: flex;
+            justify-content: flex-end;
         }
 
-        .status.error {
-            background-color: #fde7e9;
-            color: #a80000;
-            border: 1px solid #a80000;
-        }
-
-        .status.info {
-            background-color: #e1f5fe;
-            color: #01579b;
-            border: 1px solid #01579b;
-        }
-
-        .email-info {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f0f0f0;
-            border-radius: 4px;
+        .submit-button {
+            background: linear-gradient(135deg, #f9a825 0%, #f57f17 100%);
+            color: white;
+            border: none;
+            padding: 10px 28px;
             font-size: 14px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(249, 168, 37, 0.3);
         }
 
-        .email-info label {
-            font-weight: bold;
-            color: #666;
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(249, 168, 37, 0.4);
         }
 
-        .email-info p {
-            margin: 5px 0;
-            word-break: break-all;
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .submit-button:disabled {
+            background: #d1d1d1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .success-message {
+            display: none;
+            padding: 12px;
+            background: #dff6dd;
+            border-left: 4px solid #0b7815;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            color: #0b7815;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .error-message {
+            padding: 12px;
+            background: #fde7e9;
+            border-left: 4px solid #a80000;
+            border-radius: 4px;
+            margin: 20px;
+            color: #a80000;
+            font-weight: 600;
+            font-size: 13px;
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <h2>Power Automate Flow Trigger</h2>
+    <!-- Loading State -->
+    <div id="loadingContainer">
+        <div class="spinner"></div>
+        <div class="loading-text">Triggering underwriting flow...</div>
+        <div class="loading-subtext">Please wait while we extract form data</div>
+    </div>
 
-        <div class="email-info" id="emailInfo" style="display: none;">
-            <label>Current Email:</label>
-            <p id="emailSubject"></p>
+    <!-- Form Container -->
+    <div id="formContainer">
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="6" y="6" width="16" height="16" rx="2" fill="#f9a825"/>
+                        <rect x="26" y="6" width="16" height="16" rx="2" fill="#f9a825"/>
+                        <rect x="6" y="26" width="16" height="16" rx="2" fill="#f9a825"/>
+                        <rect x="26" y="26" width="16" height="16" rx="2" fill="#fdd835"/>
+                    </svg>
+                </div>
+                <h1 class="form-title">Insurance Policy Information</h1>
+            </div>
+            <p class="form-subtitle">Please review and submit the policy details below</p>
         </div>
 
-        <div class="button-container">
-            <button id="triggerButton" onclick="triggerFlow()">
-                Process Test
-            </button>
-        </div>
+        <form id="insuranceForm">
+            <div class="form-body">
+                <div class="success-message" id="successMessage">
+                    ✓ Form submitted successfully!
+                </div>
 
-        <div class="status" id="statusMessage"></div>
+                <div class="form-section">
+                    <label class="form-label" for="brokerEmail">
+                        Sender's Email <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="email" 
+                        id="brokerEmail" 
+                        name="brokerEmail" 
+                        class="form-input" 
+                        placeholder="sender@example.com"
+                        required
+                    >
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="brokerName">
+                        Sender's Name <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="brokerName" 
+                        name="brokerName" 
+                        class="form-input" 
+                        placeholder="Enter sender name"
+                        required
+                    >
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="underwriterEmail">
+                        Receiver's Email <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="email" 
+                        id="underwriterEmail" 
+                        name="underwriterEmail" 
+                        class="form-input" 
+                        placeholder="receiver@example.com"
+                        required
+                    >
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="underwriterName">
+                        Receiver's Name <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="underwriterName" 
+                        name="underwriterName" 
+                        class="form-input" 
+                        placeholder="Enter receiver name"
+                        required
+                    >
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="policyNumber">
+                        Policy Number <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="policyNumber" 
+                        name="policyNumber" 
+                        class="form-input" 
+                        placeholder="Enter policy number"
+                        required
+                    >
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="agencyName">
+                        Agency Name
+                    </label>
+                    <input 
+                        type="text" 
+                        id="agencyName" 
+                        name="agencyName" 
+                        class="form-input" 
+                        placeholder="Enter agency name"
+                    >
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="agencyId">
+                        Agency/Broker ID
+                    </label>
+                    <input 
+                        type="text" 
+                        id="agencyId" 
+                        name="agencyId" 
+                        class="form-input" 
+                        placeholder="Enter agency or broker ID"
+                    >
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="emailSummary">
+                        Email Summary
+                    </label>
+                    <textarea 
+                        id="emailSummary" 
+                        name="emailSummary" 
+                        class="form-input" 
+                        rows="4"
+                        placeholder="Summary of the email content"
+                    ></textarea>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="comments">
+                        Comments
+                    </label>
+                    <textarea 
+                        id="comments" 
+                        name="comments" 
+                        class="form-input" 
+                        rows="3"
+                        placeholder="Additional comments"
+                    ></textarea>
+                </div>
+
+                <div class="form-section">
+                    <label class="form-label" for="timestamp">
+                        Timestamp
+                    </label>
+                    <input 
+                        type="text" 
+                        id="timestamp" 
+                        name="timestamp" 
+                        class="form-input" 
+                        disabled
+                        readonly
+                    >
+                    <p class="input-hint">Auto-generated timestamp</p>
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <button type="submit" class="submit-button">Submit</button>
+            </div>
+        </form>
     </div>
 
     <script src="taskpane.js"></script>
 </body>
-
 </html>

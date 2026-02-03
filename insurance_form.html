@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insurance Policy Information Form</title>
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
     <style>
         * {
             margin: 0;
@@ -18,11 +16,11 @@
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #fff8e1 0%, #ffe9a8 100%);
             min-height: 100vh;
-            padding: 10px;
+            padding: 40px 20px;
         }
 
         .container {
-            max-width: 100%;
+            max-width: 720px;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
@@ -36,7 +34,6 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -45,7 +42,7 @@
 
         .header {
             background: linear-gradient(135deg, #f9a825 0%, #f57f17 100%);
-            padding: 20px;
+            padding: 40px;
             position: relative;
             overflow: hidden;
         }
@@ -102,7 +99,7 @@
         }
 
         .form-body {
-            padding: 20px;
+            padding: 40px;
         }
 
         .form-section {
@@ -110,44 +107,20 @@
             animation: fadeIn 0.6s ease-out backwards;
         }
 
-        .form-section:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .form-section:nth-child(2) {
-            animation-delay: 0.15s;
-        }
-
-        .form-section:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-
-        .form-section:nth-child(4) {
-            animation-delay: 0.25s;
-        }
-
-        .form-section:nth-child(5) {
-            animation-delay: 0.3s;
-        }
-
-        .form-section:nth-child(6) {
-            animation-delay: 0.35s;
-        }
-
-        .form-section:nth-child(7) {
-            animation-delay: 0.4s;
-        }
-
-        .form-section:nth-child(8) {
-            animation-delay: 0.45s;
-        }
+        .form-section:nth-child(1) { animation-delay: 0.1s; }
+        .form-section:nth-child(2) { animation-delay: 0.15s; }
+        .form-section:nth-child(3) { animation-delay: 0.2s; }
+        .form-section:nth-child(4) { animation-delay: 0.25s; }
+        .form-section:nth-child(5) { animation-delay: 0.3s; }
+        .form-section:nth-child(6) { animation-delay: 0.35s; }
+        .form-section:nth-child(7) { animation-delay: 0.4s; }
+        .form-section:nth-child(8) { animation-delay: 0.45s; }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -201,7 +174,7 @@
         }
 
         .submit-section {
-            padding: 20px;
+            padding: 24px 40px;
             background: #faf9f8;
             border-top: 1px solid #edebe9;
             display: flex;
@@ -258,7 +231,6 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -288,17 +260,16 @@
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="header">
             <div class="header-top">
                 <div class="logo">
                     <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="6" y="6" width="16" height="16" rx="2" fill="#f9a825" />
-                        <rect x="26" y="6" width="16" height="16" rx="2" fill="#f9a825" />
-                        <rect x="6" y="26" width="16" height="16" rx="2" fill="#f9a825" />
-                        <rect x="26" y="26" width="16" height="16" rx="2" fill="#fdd835" />
+                        <rect x="6" y="6" width="16" height="16" rx="2" fill="#f9a825"/>
+                        <rect x="26" y="6" width="16" height="16" rx="2" fill="#f9a825"/>
+                        <rect x="6" y="26" width="16" height="16" rx="2" fill="#f9a825"/>
+                        <rect x="26" y="26" width="16" height="16" rx="2" fill="#fdd835"/>
                     </svg>
                 </div>
                 <h1 class="form-title">Insurance Policy Information</h1>
@@ -311,88 +282,117 @@
                 <div class="success-message" id="successMessage">
                     ✓ Form submitted successfully!
                 </div>
-                <div id="flowStatus"
-                    style="font-size: 12px; color: #666; margin-bottom: 20px; padding: 10px; background: #f0f0f0; border-radius: 4px; display: none;">
-                    Initializing workflow...
-                </div>
 
                 <div class="form-section">
                     <label class="form-label" for="brokerEmail">
-                        Sender's Email <span class="required">*</span>
+                        Broker Email <span class="required">*</span>
                     </label>
-                    <input type="email" id="brokerEmail" name="brokerEmail" class="form-input"
-                        placeholder="broker@example.com" required>
+                    <input 
+                        type="email" 
+                        id="brokerEmail" 
+                        name="brokerEmail" 
+                        class="form-input" 
+                        placeholder="broker@example.com"
+                        required
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="brokerName">
-                        Sender's Name <span class="required">*</span>
+                        Broker Name <span class="required">*</span>
                     </label>
-                    <input type="text" id="brokerName" name="brokerName" class="form-input"
-                        placeholder="Enter broker name" required>
+                    <input 
+                        type="text" 
+                        id="brokerName" 
+                        name="brokerName" 
+                        class="form-input" 
+                        placeholder="Enter broker name"
+                        required
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="underwriterEmail">
-                        Receiver's Email <span class="required">*</span>
+                        Underwriter Email <span class="required">*</span>
                     </label>
-                    <input type="email" id="underwriterEmail" name="underwriterEmail" class="form-input"
-                        placeholder="underwriter@example.com" required>
+                    <input 
+                        type="email" 
+                        id="underwriterEmail" 
+                        name="underwriterEmail" 
+                        class="form-input" 
+                        placeholder="underwriter@example.com"
+                        required
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="underwriterName">
-                        Receiver's Name <span class="required">*</span>
+                        Underwriter Name <span class="required">*</span>
                     </label>
-                    <input type="text" id="underwriterName" name="underwriterName" class="form-input"
-                        placeholder="Enter underwriter name" required>
+                    <input 
+                        type="text" 
+                        id="underwriterName" 
+                        name="underwriterName" 
+                        class="form-input" 
+                        placeholder="Enter underwriter name"
+                        required
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="policyNumber">
                         Policy Number <span class="required">*</span>
                     </label>
-                    <input type="text" id="policyNumber" name="policyNumber" class="form-input"
-                        placeholder="Enter policy number" required>
+                    <input 
+                        type="text" 
+                        id="policyNumber" 
+                        name="policyNumber" 
+                        class="form-input" 
+                        placeholder="Enter policy number"
+                        required
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="agencyName">
-                        Agency Name
+                        Broker Agency Name <span class="required">*</span>
                     </label>
-                    <input type="text" id="agencyName" name="agencyName" class="form-input"
-                        placeholder="Enter agency name">
+                    <input 
+                        type="text" 
+                        id="agencyName" 
+                        name="agencyName" 
+                        class="form-input" 
+                        placeholder="Enter agency name"
+                        required
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="agencyId">
-                        Agency/Broker ID
+                        Broker/Agency ID <span class="required">*</span>
                     </label>
-                    <input type="text" id="agencyId" name="agencyId" class="form-input"
-                        placeholder="Enter broker or agency ID">
-                </div>
-
-                <div class="form-section">
-                    <label class="form-label" for="emailSummary">
-                        Email Summary
-                    </label>
-                    <textarea id="emailSummary" name="emailSummary" class="form-input" rows="4"
-                        placeholder="Summary of the email content"></textarea>
-                </div>
-
-                <div class="form-section">
-                    <label class="form-label" for="comments">
-                        Comments
-                    </label>
-                    <textarea id="comments" name="comments" class="form-input" rows="3"
-                        placeholder="Additional comments"></textarea>
+                    <input 
+                        type="text" 
+                        id="agencyId" 
+                        name="agencyId" 
+                        class="form-input" 
+                        placeholder="Enter broker or agency ID"
+                        required
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="timestamp">
-                        Timestamp
+                        Timestamp <span class="required">*</span>
                     </label>
-                    <input type="text" id="timestamp" name="timestamp" class="form-input" disabled readonly>
+                    <input 
+                        type="text" 
+                        id="timestamp" 
+                        name="timestamp" 
+                        class="form-input" 
+                        disabled
+                        readonly
+                    >
                     <p class="input-hint">Auto-generated timestamp</p>
                 </div>
             </div>
@@ -404,160 +404,16 @@
     </div>
 
     <script>
-        // Initialize Office.js
-        Office.onReady((info) => {
-            if (info.host === Office.HostType.Outlook) {
-                console.log("Outlook Add-in ready");
-                prefillFromOutlook();
-                triggerFlowFromTaskpane();
-            }
-        });
+        // Store filename from URL params for later submission
+        let filename = '';
 
-        // Function to get current email data and prefill
-        async function prefillFromOutlook() {
-            const item = Office.context.mailbox.item;
-            if (!item) return;
-
-            // Prefill Broker Email from sender if available
-            if (item.sender && item.sender.emailAddress) {
-                document.getElementById('brokerEmail').value = item.sender.emailAddress;
-            }
-            if (item.sender && item.sender.displayName) {
-                document.getElementById('brokerName').value = item.sender.displayName;
-            }
-
-            // Prefill Email Summary from body
-            item.body.getAsync(Office.CoercionType.Text, (result) => {
-                if (result.status === Office.AsyncResultStatus.Succeeded) {
-                    const body = result.value;
-                    // Simple summary: first 200 characters or first paragraph
-                    const summary = body.split('\n')[0].substring(0, 200);
-                    document.getElementById('emailSummary').value = summary;
-                }
-            });
-
-            // Subject is a property in Read mode
-            console.log("Subject:", item.subject);
-        }
-
-        // Logic to trigger Power Automate flow
-        async function triggerFlowFromTaskpane() {
-            const statusDiv = document.getElementById('flowStatus');
-            statusDiv.style.display = 'block';
-            statusDiv.textContent = "Analyzing email and triggering workflow...";
-
-            try {
-                const item = Office.context.mailbox.item;
-                const emailData = await getEmailData(item);
-
-                const flowUrl = "https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/89c12382226642a4907cd110e9e7ab87/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Nbz7sUIbNoHlSBt_KVnF3CFKCCf9lPYn-LbIxZsWouA";
-
-                const response = await fetch(flowUrl, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(emailData)
-                });
-
-                if (response.ok) {
-                    statusDiv.textContent = "✓ Workflow triggered successfully. Processing report...";
-                    statusDiv.style.background = "#dff6dd";
-                    statusDiv.style.color = "#0b7815";
-
-                    // Match commands.html logic: wait 20s and open report
-                    const attachmentName = emailData.attachments && emailData.attachments.length > 0
-                        ? emailData.attachments[0].name
-                        : "report.html";
-
-                    const baseFilename = attachmentName.replace(/\.[^/.]+$/, "");
-                    const reportUrl = `https://datasciencewiizardsai-my.sharepoint.com/personal/karan_panchal_datasciencewizards_ai/Documents/Output_attachments/${baseFilename}_report.pdf`;
-
-                    setTimeout(() => {
-                        statusDiv.textContent = "✓ Email is already processed. Opening report...";
-
-                        // Try to open report
-                        try {
-                            Office.context.ui.displayDialogAsync(
-                                reportUrl,
-                                { height: 80, width: 80, displayInIframe: false },
-                                (result) => {
-                                    if (result.status === Office.AsyncResultStatus.Failed) {
-                                        window.open(reportUrl, '_blank');
-                                    }
-                                }
-                            );
-                        } catch (e) {
-                            window.open(reportUrl, '_blank');
-                        }
-                    }, 20000);
-
-                } else {
-                    const err = await response.text();
-                    throw new Error(`HTTP ${response.status}: ${err}`);
-                }
-            } catch (error) {
-                console.error("Flow failed:", error);
-                statusDiv.textContent = "⚠ Workflow trigger failed: " + error.message;
-                statusDiv.style.background = "#fde7e9";
-                statusDiv.style.color = "#a80000";
-            }
-        }
-
-        // Helper to collect email data (similar to commands.html logic)
-        async function getEmailData(item) {
-            const data = {
-                triggeredAt: new Date().toISOString(),
-                userEmail: Office.context.mailbox.userProfile.emailAddress || "",
-                subject: item.subject || "No Subject",
-                internetMessageId: item.internetMessageId || "",
-                itemId: item.itemId || "",
-                conversationId: item.conversationId || "",
-                from: (item.from && (item.from.emailAddress || item.from.displayName)) || "Unknown",
-                receivedDateTime: item.dateTimeCreated || new Date().toISOString()
-            };
-
-            // Get Body
-            data.body = await new Promise(resolve => {
-                item.body.getAsync(Office.CoercionType.Text, res => {
-                    resolve(res.status === Office.AsyncResultStatus.Succeeded ? res.value : "Body unavailable");
-                });
-            });
-
-            // Get Attachments Content (Matches commands.html base64 logic)
-            data.attachments = [];
-            if (item.attachments && item.attachments.length > 0) {
-                for (const att of item.attachments) {
-                    await new Promise(resolve => {
-                        item.getAttachmentContentAsync(att.id, res => {
-                            if (res.status === Office.AsyncResultStatus.Succeeded) {
-                                data.attachments.push({
-                                    id: att.id,
-                                    name: att.name,
-                                    contentType: att.contentType,
-                                    size: att.size,
-                                    content: res.value.content,
-                                    format: res.value.format
-                                });
-                            } else {
-                                data.attachments.push({
-                                    id: att.id,
-                                    name: att.name,
-                                    error: res.error ? res.error.message : 'Unknown error'
-                                });
-                            }
-                            resolve();
-                        });
-                    });
-                }
-            }
-            data.hasAttachments = data.attachments.length > 0;
-            data.attachmentCount = data.attachments.length;
-
-            return data;
-        }
-
-        // Keep existing URL param logic as fallback
+        // Function to get URL parameters
         function getUrlParams() {
             const params = new URLSearchParams(window.location.search);
+            
+            // Store filename
+            filename = params.get('filename') || '';
+            
             return {
                 brokerEmail: params.get('brokerEmail') || '',
                 brokerName: params.get('brokerName') || '',
@@ -566,65 +422,207 @@
                 policyNumber: params.get('policyNumber') || '',
                 agencyName: params.get('agencyName') || '',
                 agencyId: params.get('agencyId') || '',
-                emailSummary: params.get('emailSummary') || '',
-                comments: params.get('comments') || '',
                 timestamp: params.get('timestamp') || ''
             };
         }
 
+        // Function to prefill form fields
         function prefillForm() {
             const params = getUrlParams();
-            if (params.brokerEmail) document.getElementById('brokerEmail').value = params.brokerEmail;
-            if (params.brokerName) document.getElementById('brokerName').value = params.brokerName;
-            if (params.underwriterEmail) document.getElementById('underwriterEmail').value = params.underwriterEmail;
-            if (params.underwriterName) document.getElementById('underwriterName').value = params.underwriterName;
-            if (params.policyNumber) document.getElementById('policyNumber').value = params.policyNumber;
-            if (params.agencyName) document.getElementById('agencyName').value = params.agencyName;
-            if (params.agencyId) document.getElementById('agencyId').value = params.agencyId;
-            if (params.emailSummary) document.getElementById('emailSummary').value = params.emailSummary;
-            if (params.comments) document.getElementById('comments').value = params.comments;
-
+            
+            // Prefill all fields
+            document.getElementById('brokerEmail').value = params.brokerEmail;
+            document.getElementById('brokerName').value = params.brokerName;
+            document.getElementById('underwriterEmail').value = params.underwriterEmail;
+            document.getElementById('underwriterName').value = params.underwriterName;
+            document.getElementById('policyNumber').value = params.policyNumber;
+            document.getElementById('agencyName').value = params.agencyName;
+            document.getElementById('agencyId').value = params.agencyId;
+            
+            // Set timestamp - use provided or generate new one
             const timestampField = document.getElementById('timestamp');
             if (params.timestamp) {
                 timestampField.value = params.timestamp;
             } else {
                 const now = new Date();
                 timestampField.value = now.toLocaleString('en-US', {
-                    year: 'numeric', month: '2-digit', day: '2-digit',
-                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
                 });
             }
         }
 
-        document.getElementById('insuranceForm').addEventListener('submit', function (e) {
+        // Handle form submission
+        document.getElementById('insuranceForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            // Get form data
             const formData = {
-                brokerEmail: document.getElementById('brokerEmail').value,
-                brokerName: document.getElementById('brokerName').value,
-                underwriterEmail: document.getElementById('underwriterEmail').value,
-                underwriterName: document.getElementById('underwriterName').value,
-                policyNumber: document.getElementById('policyNumber').value,
-                agencyName: document.getElementById('agencyName').value,
-                agencyId: document.getElementById('agencyId').value,
-                emailSummary: document.getElementById('emailSummary').value,
-                comments: document.getElementById('comments').value,
+                broker_email: document.getElementById('brokerEmail').value,
+                broker_name: document.getElementById('brokerName').value,
+                underwriter_email: document.getElementById('underwriterEmail').value,
+                underwriter_name: document.getElementById('underwriterName').value,
+                policy_number: document.getElementById('policyNumber').value,
+                broker_agency_name: document.getElementById('agencyName').value,
+                broker_agency_id: document.getElementById('agencyId').value,
                 timestamp: document.getElementById('timestamp').value
             };
-            console.log('Form Data:', formData);
-            const successMessage = document.getElementById('successMessage');
-            successMessage.classList.add('show');
+            
             const submitButton = document.querySelector('.submit-button');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Submitted';
-            setTimeout(() => {
-                successMessage.classList.remove('show');
+            const successMessage = document.getElementById('successMessage');
+            
+            try {
+                // Disable submit button
+                submitButton.disabled = true;
+                submitButton.textContent = 'Submitting...';
+                
+                // Step 3: Confirm email fields
+                console.log('Step 3: Confirming email fields...');
+                const confirmResponse = await fetch('https://corinne-unstudded-uneugenically.ngrok-free.dev/api/email-fields', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    },
+                    body: JSON.stringify({
+                        filename: filename,
+                        email_fields: formData
+                    })
+                });
+                
+                if (!confirmResponse.ok) {
+                    throw new Error(`Email fields confirmation failed: ${confirmResponse.status}`);
+                }
+                
+                console.log('Email fields confirmed successfully');
+                
+                // Step 4: Process the file
+                console.log('Step 4: Processing file...');
+                submitButton.textContent = 'Processing...';
+                
+                const processResponse = await fetch('https://corinne-unstudded-uneugenically.ngrok-free.dev/api/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true'
+                    },
+                    body: JSON.stringify({
+                        filename: filename
+                    })
+                });
+                
+                if (!processResponse.ok) {
+                    throw new Error(`Processing failed: ${processResponse.status}`);
+                }
+                
+                const result = await processResponse.json();
+                console.log('Processing successful:', result);
+                
+                // Show success message
+                successMessage.textContent = '✓ Form submitted and processed successfully! Generating report...';
+                successMessage.classList.add('show');
+                submitButton.textContent = 'Generating Report...';
+                
+                // ===== STEP 5: Poll output-pdf API until report is ready =====
+                console.log('Step 5: Waiting for PDF report...');
+                let pdfReady = false;
+                let pdfPollingAttempts = 0;
+                const maxPdfPollingAttempts = 60; // Max 5 minutes
+                
+                while (pdfPollingAttempts < maxPdfPollingAttempts && !pdfReady) {
+                    try {
+                        const pdfResponse = await fetch('https://corinne-unstudded-uneugenically.ngrok-free.dev/api/output-pdf', {
+                            headers: {
+                                'ngrok-skip-browser-warning': 'true',
+                                'Accept': 'application/json'
+                            }
+                        });
+                        
+                        if (pdfResponse.status === 200) {
+                            const pdfData = await pdfResponse.json();
+                            console.log('PDF is ready!', pdfData);
+                            
+                            // Get the report URL from the API response
+                            const reportUrl = pdfData.pdf_url;
+                            
+                            if (reportUrl) {
+                                console.log('Opening report:', reportUrl);
+                                
+                                // Try to open immediately
+                                const newWindow = window.open(reportUrl, '_blank', 'noopener,noreferrer');
+                                
+                                if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                                    console.error('Popup was blocked!');
+                                    // Show user a link they can click
+                                    successMessage.innerHTML = `✓ Form submitted! <a href="${reportUrl}" target="_blank" style="color: #0078d4; text-decoration: underline;">Click here to open report</a>`;
+                                } else {
+                                    console.log('Report opened successfully in new tab');
+                                    successMessage.textContent = '✓ Form submitted and report opened successfully!';
+                                }
+                            } else {
+                                console.error('No pdf_url in response:', pdfData);
+                                successMessage.textContent = '✓ Form submitted! Report URL not available.';
+                            }
+                            
+                            pdfReady = true;
+                            break;
+                        }
+                    } catch (pollError) {
+                        console.warn('PDF polling attempt failed:', pollError.message);
+                    }
+                    
+                    // Wait 5 seconds before next attempt
+                    await new Promise(resolve => setTimeout(resolve, 5000));
+                    pdfPollingAttempts++;
+                }
+                
+                if (!pdfReady) {
+                    console.warn('PDF report generation timed out');
+                    successMessage.textContent = '✓ Form submitted! Report is still processing...';
+                }
+                
+                submitButton.textContent = 'Submitted';
+                
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Submit';
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                
+                // Show error message
+                successMessage.textContent = '✗ Submission failed: ' + error.message;
+                successMessage.style.background = '#fde7e9';
+                successMessage.style.color = '#a80000';
+                successMessage.style.borderLeft = '4px solid #a80000';
+                successMessage.classList.add('show');
+                
                 submitButton.disabled = false;
                 submitButton.textContent = 'Submit';
-            }, 3000);
+                
+                // Reset error styling after 5 seconds
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                    successMessage.style.background = '#dff6dd';
+                    successMessage.style.color = '#0b7815';
+                    successMessage.style.borderLeft = '4px solid #0b7815';
+                }, 5000);
+            }
         });
 
+        // Initialize form when page loads
         window.addEventListener('DOMContentLoaded', prefillForm);
     </script>
 </body>
-
 </html>
+
+
+

@@ -5,19 +5,19 @@
            xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0"
            xsi:type="MailApp">
   
-  <Id>12345678-1234-1234-1234-123456700000</Id>
-  <Version>1.0.1.4</Version>
+  <Id>12345678-1234-1234-1234-123456789012</Id>
+  <Version>1.0.0.2</Version>
   <ProviderName>Data Science Wizards</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="Insurance Underwriting"/>
-  <Description DefaultValue="Process insurance details directly from your email."/>
-  
+  <DisplayName DefaultValue="Auto Process"/>
+  <Description DefaultValue="Auto Process"/>
   <IconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo64.png"/>
   <HighResolutionIconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo128.png"/>
+  <SupportUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/support"/>
   
   <AppDomains>
-    <AppDomain>anjali-masur-dsw.github.io</AppDomain>
-    <AppDomain>default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com</AppDomain>
+    <AppDomain>https://anjali-masur-dsw.github.io</AppDomain>
+    <AppDomain>https://datasciencewiizardsai-my.sharepoint.com</AppDomain>
   </AppDomains>
   
   <Hosts>
@@ -34,14 +34,16 @@
     <Form xsi:type="ItemRead">
       <DesktopSettings>
         <SourceLocation DefaultValue="https://anjali-masur-dsw.github.io/trigger/insurance_form.html"/>
-        <RequestedHeight>300</RequestedHeight>
+        <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
   </FormSettings>
   
   <Permissions>ReadWriteMailbox</Permissions>
   
-  <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
+  <Rule xsi:type="RuleCollection" Mode="Or">
+    <Rule xsi:type="ItemIs" ItemType="Message" FormType="Read"/>
+  </Rule>
   
   <VersionOverrides xmlns="http://schemas.microsoft.com/office/mailappversionoverrides" xsi:type="VersionOverridesV1_0">
     <Requirements>
@@ -53,50 +55,58 @@
     <Hosts>
       <Host xsi:type="MailHost">
         <DesktopFormFactor>
-          <!-- Using taskpane.html as the FunctionFile is a common requirement for ribbon buttons to activate -->
-          <FunctionFile resid="TaskpaneUrl"/>
+          <FunctionFile resid="Commands.Url"/>
           
+          <!-- MESSAGE READ SURFACE - This is the main reading area -->
           <ExtensionPoint xsi:type="MessageReadCommandSurface">
+            <!-- Using TabDefault puts it in the Home tab -->
             <OfficeTab id="TabDefault">
-              <Group id="msgReadGroupInsurance">
+              <!-- Create a custom group that appears earlier in the ribbon -->
+              <Group id="msgReadCustomGroup">
                 <Label resid="GroupLabel"/>
-                <Control xsi:type="Button" id="msgReadOpenInsurance">
-                  <Label resid="ButtonTitle"/>
+                <!-- OverriddenByRibbonApi=false ensures it's always visible -->
+                
+                <!-- Primary action button -->
+                <Control xsi:type="Button" id="msgReadTriggerButton">
+                  <Label resid="TriggerButton.Label"/>
                   <Supertip>
-                    <Title resid="ButtonTitle"/>
-                    <Description resid="ButtonDesc"/>
+                    <Title resid="TriggerButton.SupertipTitle"/>
+                    <Description resid="TriggerButton.SupertipText"/>
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="Icon16"/>
-                    <bt:Image size="32" resid="Icon32"/>
-                    <bt:Image size="80" resid="Icon80"/>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
                   </Icon>
                   <Action xsi:type="ShowTaskpane">
-                    <SourceLocation resid="TaskpaneUrl"/>
+                    <SourceLocation resid="Taskpane.Url"/>
                   </Action>
                 </Control>
               </Group>
             </OfficeTab>
           </ExtensionPoint>
+          
         </DesktopFormFactor>
       </Host>
     </Hosts>
     
     <Resources>
       <bt:Images>
-        <bt:Image id="Icon16" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo16.png"/>
-        <bt:Image id="Icon32" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo32.png"/>
-        <bt:Image id="Icon80" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo8080.png"/>
+        <bt:Image id="Icon.16x16" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo8080.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="TaskpaneUrl" DefaultValue="https://anjali-masur-dsw.github.io/trigger/insurance_form.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://anjali-masur-dsw.github.io/trigger/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GroupLabel" DefaultValue="Underwriting"/>
-        <bt:String id="ButtonTitle" DefaultValue="Process Insurance"/>
+        <bt:String id="GroupLabel" DefaultValue="Flow Actions"/>
+        <bt:String id="TriggerButton.Label" DefaultValue="Auto Process"/>
+        <bt:String id="TriggerButton.SupertipTitle" DefaultValue="Trigger Power Automate"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="ButtonDesc" DefaultValue="Open the insurance processing panel for this email."/>
+        <bt:String id="TriggerButton.SupertipText" DefaultValue="Analyze this email and trigger the Power Automate workflow for routing"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
