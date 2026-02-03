@@ -62,9 +62,9 @@
 
                 while (pollingAttempts < maxPollingAttempts) {
                     try {
-                        const pendingResponse = await fetch("http://10.60.6.6:5006/api/pending", {
+                        const pendingResponse = await fetch(" https://corinne-unstudded-uneugenically.ngrok-free.dev/api/pending", {
                             headers: {
-                                // 'ngrok-skip-browser-warning': 'true',
+                                'ngrok-skip-browser-warning': 'true',
                                 'Accept': 'application/json'
                             }
                         });

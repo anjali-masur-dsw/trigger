@@ -74,9 +74,9 @@ async function triggerFlowAndLoadForm() {
 
         while (pollingAttempts < maxPollingAttempts) {
             try {
-                const pendingResponse = await fetch("http://10.60.6.6:5006/api/pending", {
+                const pendingResponse = await fetch(" https://corinne-unstudded-uneugenically.ngrok-free.dev/api/pending", {
                     headers: {
-                        // 'ngrok-skip-browser-warning': 'true',
+                        'ngrok-skip-browser-warning': 'true',
                         'Accept': 'application/json'
                     }
                 });
@@ -434,11 +434,11 @@ async function handleFormSubmit(e) {
 
         // Step 3: Confirm email fields with PDF
         console.log('Confirming email fields...');
-        const confirmResponse = await fetch('http://10.60.6.6:5006/api/email-fields', {
+        const confirmResponse = await fetch(' https://corinne-unstudded-uneugenically.ngrok-free.dev/api/email-fields', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // 'ngrok-skip-browser-warning': 'true'
+                'ngrok-skip-browser-warning': 'true'
             },
             body: JSON.stringify({
                 filename: filename,
@@ -457,11 +457,11 @@ async function handleFormSubmit(e) {
         console.log('Processing file...');
         submitButton.textContent = 'Processing...';
 
-        const processResponse = await fetch('http://10.60.6.6:5006/api/process', {
+        const processResponse = await fetch(' https://corinne-unstudded-uneugenically.ngrok-free.dev/api/process', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // 'ngrok-skip-browser-warning': 'true'
+                'ngrok-skip-browser-warning': 'true'
             },
             body: JSON.stringify({
                 filename: filename
@@ -498,9 +498,9 @@ async function handleFormSubmit(e) {
 
         while (pdfPollingAttempts < maxPdfPollingAttempts && !pdfReady) {
             try {
-                const pdfResponse = await fetch('http://10.60.6.6:5006/api/output-pdf', {
+                const pdfResponse = await fetch(' https://corinne-unstudded-uneugenically.ngrok-free.dev/api/output-pdf', {
                     headers: {
-                        // 'ngrok-skip-browser-warning': 'true',
+                        'ngrok-skip-browser-warning': 'true',
                         'Accept': 'application/json'
                     }
                 });
