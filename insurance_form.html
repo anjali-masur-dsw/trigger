@@ -462,7 +462,7 @@
 
                 // Step 3: Confirm email fields
                 console.log('Step 3: Confirming email fields...');
-                const confirmResponse = await fetch(' https://corinne-unstudded-uneugenically.ngrok-free.dev/api/email-fields', {
+                const confirmResponse = await fetch(' https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/email-fields', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -484,7 +484,7 @@
                 console.log('Step 4: Processing file...');
                 submitButton.textContent = 'Processing...';
 
-                const processResponse = await fetch('https://corinne-unstudded-uneugenically.ngrok-free.dev/api/process', {
+                const processResponse = await fetch('https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/process', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -515,7 +515,7 @@
 
                 while (pdfPollingAttempts < maxPdfPollingAttempts && !pdfReady) {
                     try {
-                        const pdfResponse = await fetch('https://corinne-unstudded-uneugenically.ngrok-free.dev/api/output-pdf', {
+                        const pdfResponse = await fetch('https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/output-pdf', {
                             headers: {
                                 'ngrok-skip-browser-warning': 'true',
                                 'Accept': 'application/json'
