@@ -40,7 +40,10 @@ async function triggerFlowAndLoadForm() {
 
         const response = await fetch(flowUrl, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true"
+            },
             body: JSON.stringify(emailData)
         });
 
