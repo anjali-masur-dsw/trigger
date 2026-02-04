@@ -466,8 +466,7 @@
                 const confirmResponse = await fetch(`${BACKEND_URL}/api/email-fields`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'ngrok-skip-browser-warning': 'true'
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         filename: filename,
@@ -488,8 +487,7 @@
                 const processResponse = await fetch(`${BACKEND_URL}/api/process`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'ngrok-skip-browser-warning': 'true'
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         filename: filename
@@ -518,7 +516,6 @@
                     try {
                         const pdfResponse = await fetch(`${BACKEND_URL}/api/output-pdf`, {
                             headers: {
-                                'ngrok-skip-browser-warning': 'true',
                                 'Accept': 'application/json'
                             }
                         });
