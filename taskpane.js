@@ -77,6 +77,7 @@ async function triggerFlowAndLoadForm() {
             try {
                 const pendingResponse = await fetch(`${BACKEND_URL}/api/pending`, {
                     headers: {
+                        'ngrok-skip-browser-warning': 'true',
                         'Accept': 'application/json'
                     }
                 });
@@ -437,7 +438,8 @@ async function handleFormSubmit(e) {
         const confirmResponse = await fetch(`${BACKEND_URL}/api/email-fields`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
             },
             body: JSON.stringify({
                 filename: filename,
@@ -459,7 +461,8 @@ async function handleFormSubmit(e) {
         const processResponse = await fetch(`${BACKEND_URL}/api/process`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
             },
             body: JSON.stringify({
                 filename: filename
@@ -498,6 +501,7 @@ async function handleFormSubmit(e) {
             try {
                 const pdfResponse = await fetch(`${BACKEND_URL}/api/output-pdf`, {
                     headers: {
+                        'ngrok-skip-browser-warning': 'true',
                         'Accept': 'application/json'
                     }
                 });

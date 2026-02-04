@@ -65,6 +65,7 @@
                     try {
                         const pendingResponse = await fetch(`${BACKEND_URL}/api/pending`, {
                             headers: {
+                                'ngrok-skip-browser-warning': 'true',
                                 'Accept': 'application/json'
                             }
                         });
