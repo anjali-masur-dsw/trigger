@@ -36,13 +36,12 @@ async function triggerFlowAndLoadForm() {
         loadingText.textContent = 'Triggering Power Automate flow...';
         loadingSubtext.textContent = 'Sending email data for processing';
 
-        const flowUrl = "https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/89c12382226642a4907cd110e9e7ab87/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Nbz7sUIbNoHlSBt_KVnF3CFKCCf9lPYn-LbIxZsWouA";
+        const flowUrl = "https://default74afe875305e4ab4ba4ac1359a7629ae.ae.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/89c12382226642a4907cd110e9e7ab87/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Nbz7sUIbNoHlSBt_KVnF3CFKCCf9lPYn-LbIxZsWouA";
 
         const response = await fetch(flowUrl, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "ngrok-skip-browser-warning": "true"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(emailData)
         });
