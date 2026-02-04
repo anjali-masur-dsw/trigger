@@ -40,9 +40,7 @@ async function triggerFlowAndLoadForm() {
 
         const response = await fetch(flowUrl, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(emailData)
         });
 
@@ -76,7 +74,7 @@ async function triggerFlowAndLoadForm() {
 
         while (pollingAttempts < maxPollingAttempts) {
             try {
-                const pendingResponse = await fetch("https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/pending", {
+                const pendingResponse = await fetch(" https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/pending", {
                     headers: {
                         'ngrok-skip-browser-warning': 'true',
                         'Accept': 'application/json'
@@ -436,7 +434,7 @@ async function handleFormSubmit(e) {
 
         // Step 3: Confirm email fields with PDF
         console.log('Confirming email fields...');
-        const confirmResponse = await fetch('https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/email-fields', {
+        const confirmResponse = await fetch(' https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/email-fields', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -459,7 +457,7 @@ async function handleFormSubmit(e) {
         console.log('Processing file...');
         submitButton.textContent = 'Processing...';
 
-        const processResponse = await fetch('https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/process', {
+        const processResponse = await fetch(' https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/process', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -500,7 +498,7 @@ async function handleFormSubmit(e) {
 
         while (pdfPollingAttempts < maxPdfPollingAttempts && !pdfReady) {
             try {
-                const pdfResponse = await fetch('https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/output-pdf', {
+                const pdfResponse = await fetch(' https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/output-pdf', {
                     headers: {
                         'ngrok-skip-browser-warning': 'true',
                         'Accept': 'application/json'

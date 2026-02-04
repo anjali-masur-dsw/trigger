@@ -28,12 +28,11 @@
 
                 const emailData = await getEmailData();
 
-                const flowUrl = "https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/89c12382226642a4907cd110e9e7ab87/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Nbz7sUIbNoHlSBt_KVnF3CFKCCf9lPYn-LbIxZsWouA";
+                const flowUrl =
+                    "https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/89c12382226642a4907cd110e9e7ab87/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Nbz7sUIbNoHlSBt_KVnF3CFKCCf9lPYn-LbIxZsWouA";
                 const response = await fetch(flowUrl, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(emailData)
                 });
 
@@ -63,7 +62,7 @@
 
                 while (pollingAttempts < maxPollingAttempts) {
                     try {
-                        const pendingResponse = await fetch("https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/pending", {
+                        const pendingResponse = await fetch(" https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/pending", {
                             headers: {
                                 'ngrok-skip-browser-warning': 'true',
                                 'Accept': 'application/json'
