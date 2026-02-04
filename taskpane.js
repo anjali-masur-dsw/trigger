@@ -2,40 +2,66 @@ let mailboxItem = null;
 let filename = '';
 const BACKEND_URL = "https://metamathematical-mariano-interresponsible.ngrok-free.dev";
 
+// UI Elements
+let loadingContainer, formContainer, loadingText, loadingSubtext, progressBar, progressContainer;
+let statusItems = {};
+
 Office.onReady((info) => {
     if (info.host === Office.HostType.Outlook) {
         mailboxItem = Office.context.mailbox.item;
-        console.log('Office.js initialized successfully');
 
-        // Automatically trigger the flow when taskpane opens
+        // Initialize UI elements
+        loadingContainer = document.getElementById('loadingContainer');
+        formContainer = document.getElementById('formContainer');
+        loadingText = document.querySelector('.loading-text');
+        loadingSubtext = document.querySelector('.loading-subtext');
+        progressBar = document.getElementById('progressBar');
+        progressContainer = document.getElementById('progressContainer');
+
+        // Map status items
+        ['email', 'flow', 'extract', 'render'].forEach(id => {
+            statusItems[id] = document.getElementById(`status-${id}`);
+        });
+
+        console.log('Office.js initialized successfully');
         triggerFlowAndLoadForm();
     }
 });
 
-async function triggerFlowAndLoadForm() {
-    const loadingContainer = document.getElementById('loadingContainer');
-    const formContainer = document.getElementById('formContainer');
-    const loadingText = document.querySelector('.loading-text');
-    const loadingSubtext = document.querySelector('.loading-subtext');
+function updateProgress(percent, statusId, text, subtext) {
+    if (progressBar) progressBar.style.width = `${percent}%`;
+    if (progressContainer) progressContainer.style.display = 'block';
+    if (loadingText) loadingText.textContent = text;
+    if (loadingSubtext) loadingSubtext.textContent = subtext;
 
+    if (statusId && statusItems[statusId]) {
+        // Reset all
+        Object.values(statusItems).forEach(item => item.classList.remove('active'));
+
+        // Set active
+        statusItems[statusId].classList.add('active');
+
+        // Set previous as completed
+        const order = ['email', 'flow', 'extract', 'render'];
+        const currentIndex = order.indexOf(statusId);
+        for (let i = 0; i < currentIndex; i++) {
+            statusItems[order[i]].classList.add('completed');
+            statusItems[order[i]].classList.remove('active');
+        }
+    }
+}
+
+async function triggerFlowAndLoadForm() {
     try {
-        // Show progress notification in email view
-        Office.context.mailbox.item.notificationMessages.addAsync(
-            "progress",
-            {
-                type: "progressIndicator",
-                message: "Analyzing email and sending to workflow..."
-            }
-        );
+        updateProgress(5, 'email', 'Initialising...', 'Connecting to underwriter services');
 
         // Step 1: Get email data
-        loadingText.textContent = 'Collecting email data...';
+        updateProgress(15, 'email', 'Collecting email data...', 'Analysing message content and attachments');
         const emailData = await getEmailData();
-        console.log('Email data collected:', emailData);
+        console.log('Email data collected');
 
         // Step 2: Trigger Power Automate flow
-        loadingText.textContent = 'Triggering Power Automate flow...';
-        loadingSubtext.textContent = 'Sending email data for processing';
+        updateProgress(30, 'flow', 'Triggering workflow...', 'Sending data to Power Automate for processing');
 
         const flowUrl = "https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/89c12382226642a4907cd110e9e7ab87/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Nbz7sUIbNoHlSBt_KVnF3CFKCCf9lPYn-LbIxZsWouA";
 
@@ -45,29 +71,14 @@ async function triggerFlowAndLoadForm() {
             body: JSON.stringify(emailData)
         });
 
-        Office.context.mailbox.item.notificationMessages.removeAsync("progress");
-
         if (!response.ok) {
-            const err = await response.text();
-            throw new Error(`HTTP ${response.status}: ${err}`);
+            throw new Error(`Flow Error: ${response.status}`);
         }
 
         console.log('Flow triggered successfully');
 
         // Step 3: Poll for extracted form data
-        // Show notification for form data extraction
-        Office.context.mailbox.item.notificationMessages.addAsync(
-            "formProcessing",
-            {
-                type: "informationalMessage",
-                message: "Extracting form data from attachments...",
-                icon: "Icon.80x80",
-                persistent: true
-            }
-        );
-
-        loadingText.textContent = 'Extracting form data from attachments...';
-        loadingSubtext.textContent = 'This may take a few moments';
+        updateProgress(45, 'extract', 'Extracting form data...', 'Reviewing attachments (this may take a minute)');
 
         let extractedData = null;
         let pollingAttempts = 0;
@@ -75,95 +86,67 @@ async function triggerFlowAndLoadForm() {
 
         while (pollingAttempts < maxPollingAttempts) {
             try {
+                // IMPORTANT: Use the bypass header for ngrok
                 const pendingResponse = await fetch(`${BACKEND_URL}/api/pending`, {
                     headers: {
+                        'ngrok-skip-browser-warning': 'true',
                         'Accept': 'application/json'
                     }
                 });
 
                 if (pendingResponse.ok) {
                     const data = await pendingResponse.json();
-                    console.log("Pending API response:", data);
-
-                    if (data.success && data.count > 0 && data.files && data.files.length > 0) {
+                    if (data.success && data.files && data.files.length > 0) {
                         extractedData = data.files[0];
-                        console.log("Extracted data received:", extractedData);
                         break;
                     }
+                } else if (pendingResponse.status === 404) {
+                    // This is expected while processing
+                    console.log("Still waiting for server processing...");
+                } else {
+                    console.warn(`Server responded with ${pendingResponse.status}`);
                 }
             } catch (pollError) {
                 console.warn("Polling attempt failed:", pollError.message);
             }
 
-            // Wait 5 seconds before next attempt
+            // Update progress slightly during polling to show life
+            const progressRange = 40; // from 45% to 85%
+            const currentProgress = 45 + Math.min((pollingAttempts / 20) * progressRange, progressRange);
+            updateProgress(currentProgress, 'extract', 'Extracting form data...', `Still working on it... (Attempt ${pollingAttempts + 1})`);
+
             await new Promise(resolve => setTimeout(resolve, 5000));
             pollingAttempts++;
-
-            if (pollingAttempts % 6 === 0) {
-                loadingSubtext.textContent = `Still processing... (${Math.floor(pollingAttempts / 12)} minute${Math.floor(pollingAttempts / 12) > 1 ? 's' : ''})`;
-            }
         }
 
         if (!extractedData) {
-            Office.context.mailbox.item.notificationMessages.removeAsync("formProcessing");
-            throw new Error('Timeout: Form data extraction did not complete in time');
+            throw new Error('Timeout: Extraction took too long. Please try refreshing.');
         }
 
-        // Remove processing notification
-        Office.context.mailbox.item.notificationMessages.removeAsync("formProcessing");
-
-        // Show success notification
-        Office.context.mailbox.item.notificationMessages.addAsync(
-            "formSuccess",
-            {
-                type: "informationalMessage",
-                message: "Form data extracted! Opening form in taskpane...",
-                icon: "Icon.80x80",
-                persistent: false
-            }
-        );
-
-        // Step 4: Populate form with extracted data
-        loadingText.textContent = 'Loading form...';
-        loadingSubtext.textContent = 'Preparing your insurance policy information';
-
+        // Step 4: Populate form
+        updateProgress(90, 'render', 'Loading form...', 'Finalising policy details');
         populateForm(extractedData);
 
-        // Show form, hide loading
-        loadingContainer.style.display = 'none';
-        formContainer.style.display = 'block';
+        // Success!
+        updateProgress(100, 'render', 'Ready!', 'Form loaded successfully');
+
+        setTimeout(() => {
+            loadingContainer.style.display = 'none';
+            formContainer.style.display = 'block';
+        }, 500);
 
     } catch (error) {
-        console.error('Error:', error);
-
-        // Remove any pending notifications
-        Office.context.mailbox.item.notificationMessages.removeAsync("progress");
-        Office.context.mailbox.item.notificationMessages.removeAsync("formProcessing");
-
-        // Show error notification in email view
-        Office.context.mailbox.item.notificationMessages.addAsync(
-            "error",
-            {
-                type: "errorMessage",
-                message: "Processing failed: " + error.message
-            }
-        );
-
-        loadingText.textContent = 'Error occurred';
-        loadingSubtext.innerHTML = `<div class="error-message">${error.message}</div>`;
+        console.error('Taskpane Error:', error);
+        loadingText.textContent = 'Something went wrong';
+        loadingSubtext.innerHTML = `<div class="error-message" style="margin: 10px 0;">${error.message}</div>
+            <button class="submit-button" onclick="location.reload()" style="margin-top: 10px; padding: 8px 15px; font-size: 12px;">Try Again</button>`;
     }
 }
 
 function populateForm(extractedData) {
-    // Store filename for later submission
     filename = extractedData.filename || '';
-
-    // Get email_fields from the extracted data
     const data = extractedData.email_fields || extractedData.extracted_data || {};
 
-    console.log("Populating form with data:", data);
-
-    // Populate form fields
     if (data.broker_email) document.getElementById('brokerEmail').value = data.broker_email;
     if (data.broker_name) document.getElementById('brokerName').value = data.broker_name;
     if (data.underwriter_email) document.getElementById('underwriterEmail').value = data.underwriter_email;
@@ -174,45 +157,16 @@ function populateForm(extractedData) {
     if (data.email_summary) document.getElementById('emailSummary').value = data.email_summary;
     if (data.comments) document.getElementById('comments').value = data.comments;
 
-    // Set timestamp
     const timestampField = document.getElementById('timestamp');
-    if (extractedData.detected_at) {
-        // Format detected_at timestamp (remove seconds)
-        const detectedDate = new Date(extractedData.detected_at);
-        timestampField.value = detectedDate.toLocaleString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
-    } else {
-        const now = new Date();
-        timestampField.value = now.toLocaleString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
-    }
+    const now = new Date();
+    timestampField.value = now.toLocaleString();
 }
 
 async function getEmailData() {
     const item = mailboxItem;
-    if (!item) throw new Error("No email context");
-
     const subject = await getSubject(item);
     const body = await getBody(item);
     const attachments = await getAttachmentContents(item);
-
-    const itemId = item.itemId || "";
-    const conversationId = item.conversationId || "";
-
-    console.log("Item ID:", itemId);
-    console.log("Conversation ID:", conversationId);
 
     return {
         triggeredAt: new Date().toISOString(),
@@ -220,58 +174,35 @@ async function getEmailData() {
         subject: subject,
         body: body,
         from: getSender(item),
-        receivedDateTime: item.dateTimeCreated || item.dateTimeModified || new Date().toISOString(),
-        internetMessageId: item.internetMessageId || "",
-        itemId: itemId,
-        conversationId: conversationId,
-        hasAttachments: attachments.length > 0,
-        attachmentCount: attachments.length,
+        receivedDateTime: item.dateTimeCreated || new Date().toISOString(),
+        itemId: item.itemId || "",
+        conversationId: item.conversationId || "",
         attachments: attachments
     };
 }
 
 function getSubject(item) {
     return new Promise(resolve => {
-        if (typeof item.subject === "string") {
-            resolve(item.subject);
-        } else {
-            item.subject.getAsync(result =>
-                resolve(result.status === Office.AsyncResultStatus.Succeeded
-                    ? result.value
-                    : "Subject unavailable")
-            );
-        }
+        if (typeof item.subject === "string") resolve(item.subject);
+        else item.subject.getAsync(r => resolve(r.status === "succeeded" ? r.value : ""));
     });
 }
 
 function getBody(item) {
     return new Promise(resolve => {
-        item.body.getAsync(Office.CoercionType.Text, result =>
-            resolve(result.status === Office.AsyncResultStatus.Succeeded
-                ? result.value
-                : "Body unavailable")
-        );
+        item.body.getAsync(Office.CoercionType.Text, r => resolve(r.status === "succeeded" ? r.value : ""));
     });
 }
 
 function getSender(item) {
     if (!item.from) return "Unknown";
-    if (typeof item.from === "string") return item.from;
-    if (item.from.emailAddress) return item.from.emailAddress;
-    if (item.from.displayName) return item.from.displayName;
-    return "Unknown";
+    return item.from.emailAddress || item.from.displayName || "Unknown";
 }
 
 async function getAttachmentContents(item) {
-    if (!item.attachments || item.attachments.length === 0) {
-        return [];
-    }
-
+    if (!item.attachments) return [];
     const results = [];
-
     for (const att of item.attachments) {
-        console.log(`Processing attachment: ${att.name}`);
-
         try {
             await new Promise(resolve => {
                 item.getAttachmentContentAsync(att.id, res => {
@@ -280,131 +211,28 @@ async function getAttachmentContents(item) {
                             id: att.id,
                             name: att.name,
                             contentType: att.contentType,
-                            size: att.size,
                             content: res.value.content,
                             format: res.value.format
-                        });
-                    } else {
-                        results.push({
-                            id: att.id,
-                            name: att.name,
-                            error: res.error ? res.error.message : 'Unknown error'
                         });
                     }
                     resolve();
                 });
             });
-        } catch (error) {
-            console.error(`Exception retrieving ${att.name}:`, error);
-            results.push({
-                id: att.id,
-                name: att.name,
-                error: error.message
-            });
-        }
+        } catch (e) { console.error(e); }
     }
-
     return results;
 }
 
-// Generate PDF from form data
-async function generateFormPDF(formData) {
-    return new Promise((resolve) => {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        // Add header
-        doc.setFillColor(249, 168, 37);
-        doc.rect(0, 0, 210, 40, 'F');
-
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(22);
-        doc.setFont(undefined, 'bold');
-        doc.text('Insurance Policy Information', 105, 20, { align: 'center' });
-
-        doc.setFontSize(12);
-        doc.setFont(undefined, 'normal');
-        doc.text('Submitted Form Response', 105, 30, { align: 'center' });
-
-        // Reset text color for body
-        doc.setTextColor(0, 0, 0);
-        let yPos = 50;
-
-        // Add form fields
-        const fields = [
-            { label: "Sender's Email", value: formData.broker_email },
-            { label: "Sender's Name", value: formData.broker_name },
-            { label: "Receiver's Email", value: formData.underwriter_email },
-            { label: "Receiver's Name", value: formData.underwriter_name },
-            { label: "Policy Number", value: formData.policy_number },
-            { label: "Agency Name", value: formData.broker_agency_name },
-            { label: "Agency/Broker ID", value: formData.broker_agency_id },
-            { label: "Email Summary", value: formData.email_summary, multiline: true },
-            { label: "Comments", value: formData.comments, multiline: true },
-            { label: "Timestamp", value: formData.timestamp }
-        ];
-
-        fields.forEach(field => {
-            if (field.value) {
-                doc.setFontSize(11);
-                doc.setFont(undefined, 'bold');
-                doc.text(field.label + ':', 20, yPos);
-
-                doc.setFont(undefined, 'normal');
-                doc.setFontSize(10);
-
-                if (field.multiline && field.value.length > 60) {
-                    // Handle long text with wrapping
-                    const lines = doc.splitTextToSize(field.value, 170);
-                    yPos += 6;
-                    lines.forEach(line => {
-                        if (yPos > 270) {
-                            doc.addPage();
-                            yPos = 20;
-                        }
-                        doc.text(line, 20, yPos);
-                        yPos += 5;
-                    });
-                    yPos += 3;
-                } else {
-                    yPos += 6;
-                    doc.text(field.value, 20, yPos);
-                    yPos += 8;
-                }
-
-                if (yPos > 270) {
-                    doc.addPage();
-                    yPos = 20;
-                }
-            }
-        });
-
-        // Add footer
-        const pageCount = doc.internal.getNumberOfPages();
-        for (let i = 1; i <= pageCount; i++) {
-            doc.setPage(i);
-            doc.setFontSize(9);
-            doc.setTextColor(128, 128, 128);
-            doc.text(`Page ${i} of ${pageCount}`, 105, 285, { align: 'center' });
-
-        }
-
-        // Convert to base64
-        const pdfBase64 = doc.output('dataurlstring').split(',')[1];
-        resolve(pdfBase64);
-    });
-}
-
 // Handle form submission
-document.addEventListener('DOMContentLoaded', function () {
-    const insuranceForm = document.getElementById('insuranceForm');
-    if (insuranceForm) {
-        insuranceForm.addEventListener('submit', handleFormSubmit);
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('insuranceForm');
+    if (form) form.addEventListener('submit', handleFormSubmit);
 });
 
 async function handleFormSubmit(e) {
     e.preventDefault();
+    const submitButton = document.querySelector('.submit-button');
+    const successMessage = document.getElementById('successMessage');
 
     const formData = {
         broker_email: document.getElementById('brokerEmail').value,
@@ -419,157 +247,70 @@ async function handleFormSubmit(e) {
         timestamp: document.getElementById('timestamp').value
     };
 
-    const submitButton = document.querySelector('.submit-button');
-    const successMessage = document.getElementById('successMessage');
-
     try {
         submitButton.disabled = true;
-        submitButton.textContent = 'Generating PDF...';
 
-        // Generate PDF from form data
-        const pdfBase64 = await generateFormPDF(formData);
-        console.log('PDF generated successfully');
+        // Show loading back
+        formContainer.style.display = 'none';
+        loadingContainer.style.display = 'flex';
+        updateProgress(10, null, 'Finalising...', 'Submitting policy confirmation');
 
-        submitButton.textContent = 'Submitting...';
-
-        // Step 3: Confirm email fields with PDF
-        console.log('Confirming email fields...');
+        // Step 1: Confirm fields
         const confirmResponse = await fetch(`${BACKEND_URL}/api/email-fields`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
             },
-            body: JSON.stringify({
-                filename: filename,
-                email_fields: formData,
-                form_pdf: pdfBase64  // Include the PDF in base64 format
-            })
+            body: JSON.stringify({ filename: filename, email_fields: formData })
         });
 
-        if (!confirmResponse.ok) {
-            throw new Error(`Email fields confirmation failed: ${confirmResponse.status}`);
-        }
+        if (!confirmResponse.ok) throw new Error('Submission failed');
+        updateProgress(40, null, 'Processing...', 'Generating analysis report');
 
-        console.log('Email fields confirmed');
-
-        // Step 4: Process the file
-        console.log('Processing file...');
-        submitButton.textContent = 'Processing...';
-
+        // Step 2: Process
         const processResponse = await fetch(`${BACKEND_URL}/api/process`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true'
             },
-            body: JSON.stringify({
-                filename: filename
-            })
+            body: JSON.stringify({ filename: filename })
         });
 
-        if (!processResponse.ok) {
-            throw new Error(`Processing failed: ${processResponse.status}`);
-        }
+        if (!processResponse.ok) throw new Error('Processing failed');
+        updateProgress(70, null, 'Publishing...', 'Uploading report to OneDrive');
 
-        const result = await processResponse.json();
-        console.log('Processing successful:', result);
-
-        // Show persistent notification in email view
-        Office.context.mailbox.item.notificationMessages.addAsync(
-            "processSuccess",
-            {
-                type: "informationalMessage",
-                message: "Email processed successfully! ✓",
-                icon: "Icon.80x80",
-                persistent: true
+        // Step 3: Poll for report
+        let reportUrl = null;
+        let attempts = 0;
+        while (attempts < 20) {
+            const pdfRes = await fetch(`${BACKEND_URL}/api/output-pdf`, {
+                headers: { 'ngrok-skip-browser-warning': 'true' }
+            });
+            if (pdfRes.ok) {
+                const pdfData = await pdfRes.json();
+                reportUrl = pdfData.pdf_url;
+                break;
             }
-        );
-
-        successMessage.textContent = '✓ Form submitted successfully! Generating report...';
-        successMessage.classList.add('show');
-        submitButton.textContent = 'Generating Report...';
-
-        // Step 5: Poll for PDF report - start immediately with shorter interval
-        console.log('Waiting for PDF report...');
-        let pdfReady = false;
-        let pdfPollingAttempts = 0;
-        const maxPdfPollingAttempts = 60; // 2 minutes max (60 attempts * 2 seconds)
-
-        while (pdfPollingAttempts < maxPdfPollingAttempts && !pdfReady) {
-            try {
-                const pdfResponse = await fetch(`${BACKEND_URL}/api/output-pdf`, {
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (pdfResponse.status === 200) {
-                    const pdfData = await pdfResponse.json();
-                    console.log('PDF is ready!', pdfData);
-
-                    const reportUrl = pdfData.pdf_url;
-
-                    if (reportUrl) {
-                        console.log('Opening report:', reportUrl);
-
-                        // Open report in new window
-                        try {
-                            const newWindow = window.open(reportUrl, '_blank', 'noopener,noreferrer');
-
-                            if (newWindow && !newWindow.closed && typeof newWindow.closed !== 'undefined') {
-                                console.log('Report opened successfully in new window');
-                                successMessage.textContent = '✓ Email processed successfully! Report opened.';
-                            } else {
-                                console.log('Window blocked, showing link');
-                                successMessage.innerHTML = `✓ Email processed successfully! <a href="${reportUrl}" target="_blank" style="color: #0078d4; text-decoration: underline; font-weight: bold;">Click here to open report</a>`;
-                            }
-                        } catch (openError) {
-                            console.error('Error opening report:', openError);
-                            successMessage.innerHTML = `✓ Email processed successfully! <a href="${reportUrl}" target="_blank" style="color: #0078d4; text-decoration: underline; font-weight: bold;">Click here to open report</a>`;
-                        }
-                    } else {
-                        successMessage.textContent = '✓ Email processed successfully! Report URL not available.';
-                    }
-
-                    pdfReady = true;
-                    break;
-                }
-            } catch (pollError) {
-                console.warn('PDF polling attempt failed:', pollError.message);
-            }
-
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            pdfPollingAttempts++;
+            await new Promise(r => setTimeout(r, 2000));
+            attempts++;
         }
 
-        if (!pdfReady) {
-            successMessage.textContent = '✓ Email processed successfully! Report is still processing...';
+        if (reportUrl) {
+            updateProgress(100, null, 'Complete!', 'Opening report...');
+            window.open(reportUrl, '_blank');
+        } else {
+            updateProgress(100, null, 'Complete!', 'Report generated successfully');
         }
 
-        submitButton.textContent = 'Submitted';
-
-        setTimeout(() => {
-            successMessage.classList.remove('show');
-            submitButton.disabled = false;
-            submitButton.textContent = 'Submit';
-        }, 3000);
+        setTimeout(() => location.reload(), 3000);
 
     } catch (error) {
-        console.error('Error submitting form:', error);
-
-        successMessage.textContent = '✗ Submission failed: ' + error.message;
-        successMessage.style.background = '#fde7e9';
-        successMessage.style.color = '#a80000';
-        successMessage.style.borderLeft = '4px solid #a80000';
-        successMessage.classList.add('show');
-
+        console.error(error);
+        alert('Error: ' + error.message);
+        loadingContainer.style.display = 'none';
+        formContainer.style.display = 'block';
         submitButton.disabled = false;
-        submitButton.textContent = 'Submit';
-
-        setTimeout(() => {
-            successMessage.classList.remove('show');
-            successMessage.style.background = '#dff6dd';
-            successMessage.style.color = '#0b7815';
-            successMessage.style.borderLeft = '4px solid #0b7815';
-        }, 5000);
     }
 }

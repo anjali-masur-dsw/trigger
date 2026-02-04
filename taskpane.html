@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,8 +40,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .loading-text {
@@ -57,6 +63,57 @@
             text-align: center;
         }
 
+        .progress-container {
+            width: 80%;
+            max-width: 300px;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-top: 25px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #f9a825, #f57f17);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .status-list {
+            margin-top: 20px;
+            width: 80%;
+            max-width: 300px;
+            font-size: 12px;
+            color: #666;
+            list-style: none;
+        }
+
+        .status-item {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.6;
+        }
+
+        .status-item.active {
+            opacity: 1;
+            color: #f57f17;
+            font-weight: 600;
+        }
+
+        .status-item.completed {
+            opacity: 1;
+            color: #0b7815;
+        }
+
+        .status-item.completed::before {
+            content: '✓';
+        }
+
         #formContainer {
             display: none;
             background: white;
@@ -64,8 +121,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .header {
@@ -236,6 +300,7 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -254,12 +319,24 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Loading State -->
     <div id="loadingContainer">
         <div class="spinner"></div>
-        <div class="loading-text">Triggering underwriting flow...</div>
-        <div class="loading-subtext">Please wait while we extract form data</div>
+        <div class="loading-text">Initialising...</div>
+        <div class="loading-subtext">Connecting to underwriter services</div>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <ul class="status-list" id="statusList">
+            <li class="status-item" id="status-email">Collecting email data</li>
+            <li class="status-item" id="status-flow">Triggering workflow</li>
+            <li class="status-item" id="status-extract">Extracting form data</li>
+            <li class="status-item" id="status-render">Loading form</li>
+        </ul>
     </div>
 
     <!-- Form Container -->
@@ -268,10 +345,10 @@
             <div class="header-top">
                 <div class="logo">
                     <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="6" y="6" width="16" height="16" rx="2" fill="#f9a825"/>
-                        <rect x="26" y="6" width="16" height="16" rx="2" fill="#f9a825"/>
-                        <rect x="6" y="26" width="16" height="16" rx="2" fill="#f9a825"/>
-                        <rect x="26" y="26" width="16" height="16" rx="2" fill="#fdd835"/>
+                        <rect x="6" y="6" width="16" height="16" rx="2" fill="#f9a825" />
+                        <rect x="26" y="6" width="16" height="16" rx="2" fill="#f9a825" />
+                        <rect x="6" y="26" width="16" height="16" rx="2" fill="#f9a825" />
+                        <rect x="26" y="26" width="16" height="16" rx="2" fill="#fdd835" />
                     </svg>
                 </div>
                 <h1 class="form-title">Insurance Policy Information</h1>
@@ -289,136 +366,79 @@
                     <label class="form-label" for="brokerEmail">
                         Sender's Email <span class="required">*</span>
                     </label>
-                    <input 
-                        type="email" 
-                        id="brokerEmail" 
-                        name="brokerEmail" 
-                        class="form-input" 
-                        placeholder="sender@example.com"
-                        required
-                    >
+                    <input type="email" id="brokerEmail" name="brokerEmail" class="form-input"
+                        placeholder="sender@example.com" required>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="brokerName">
                         Sender's Name <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="brokerName" 
-                        name="brokerName" 
-                        class="form-input" 
-                        placeholder="Enter sender name"
-                        required
-                    >
+                    <input type="text" id="brokerName" name="brokerName" class="form-input"
+                        placeholder="Enter sender name" required>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="underwriterEmail">
                         Receiver's Email <span class="required">*</span>
                     </label>
-                    <input 
-                        type="email" 
-                        id="underwriterEmail" 
-                        name="underwriterEmail" 
-                        class="form-input" 
-                        placeholder="receiver@example.com"
-                        required
-                    >
+                    <input type="email" id="underwriterEmail" name="underwriterEmail" class="form-input"
+                        placeholder="receiver@example.com" required>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="underwriterName">
                         Receiver's Name <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="underwriterName" 
-                        name="underwriterName" 
-                        class="form-input" 
-                        placeholder="Enter receiver name"
-                        required
-                    >
+                    <input type="text" id="underwriterName" name="underwriterName" class="form-input"
+                        placeholder="Enter receiver name" required>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="policyNumber">
                         Policy Number <span class="required">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="policyNumber" 
-                        name="policyNumber" 
-                        class="form-input" 
-                        placeholder="Enter policy number"
-                        required
-                    >
+                    <input type="text" id="policyNumber" name="policyNumber" class="form-input"
+                        placeholder="Enter policy number" required>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="agencyName">
                         Agency Name
                     </label>
-                    <input 
-                        type="text" 
-                        id="agencyName" 
-                        name="agencyName" 
-                        class="form-input" 
-                        placeholder="Enter agency name"
-                    >
+                    <input type="text" id="agencyName" name="agencyName" class="form-input"
+                        placeholder="Enter agency name">
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="agencyId">
                         Agency/Broker ID
                     </label>
-                    <input 
-                        type="text" 
-                        id="agencyId" 
-                        name="agencyId" 
-                        class="form-input" 
-                        placeholder="Enter agency or broker ID"
-                    >
+                    <input type="text" id="agencyId" name="agencyId" class="form-input"
+                        placeholder="Enter agency or broker ID">
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="emailSummary">
                         Email Summary
                     </label>
-                    <textarea 
-                        id="emailSummary" 
-                        name="emailSummary" 
-                        class="form-input" 
-                        rows="4"
-                        placeholder="Summary of the email content"
-                    ></textarea>
+                    <textarea id="emailSummary" name="emailSummary" class="form-input" rows="4"
+                        placeholder="Summary of the email content"></textarea>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="comments">
                         Comments
                     </label>
-                    <textarea 
-                        id="comments" 
-                        name="comments" 
-                        class="form-input" 
-                        rows="3"
-                        placeholder="Additional comments"
-                    ></textarea>
+                    <textarea id="comments" name="comments" class="form-input" rows="3"
+                        placeholder="Additional comments"></textarea>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="timestamp">
                         Timestamp
                     </label>
-                    <input 
-                        type="text" 
-                        id="timestamp" 
-                        name="timestamp" 
-                        class="form-input" 
-                        disabled
-                        readonly
-                    >
+                    <input type="text" id="timestamp" name="timestamp" class="form-input" disabled readonly>
                     <p class="input-hint">Auto-generated timestamp</p>
                 </div>
             </div>
@@ -431,4 +451,5 @@
 
     <script src="taskpane.js"></script>
 </body>
+
 </html>
