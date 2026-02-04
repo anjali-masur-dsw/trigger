@@ -34,10 +34,11 @@
     <Form xsi:type="ItemRead">
       <DesktopSettings>
         <SourceLocation DefaultValue="https://anjali-masur-dsw.github.io/trigger/insurance_form.html"/>
-        <RequestedHeight>250</RequestedHeight>
+        <RequestedHeight>300</RequestedHeight>
       </DesktopSettings>
     </Form>
   </FormSettings>
+  
   
   <Permissions>ReadWriteMailbox</Permissions>
   
