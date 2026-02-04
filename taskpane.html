@@ -63,57 +63,6 @@
             text-align: center;
         }
 
-        .progress-container {
-            width: 80%;
-            max-width: 300px;
-            height: 6px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            margin-top: 25px;
-            overflow: hidden;
-            display: none;
-        }
-
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #f9a825, #f57f17);
-            border-radius: 10px;
-            transition: width 0.3s ease;
-        }
-
-        .status-list {
-            margin-top: 20px;
-            width: 80%;
-            max-width: 300px;
-            font-size: 12px;
-            color: #666;
-            list-style: none;
-        }
-
-        .status-item {
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            opacity: 0.6;
-        }
-
-        .status-item.active {
-            opacity: 1;
-            color: #f57f17;
-            font-weight: 600;
-        }
-
-        .status-item.completed {
-            opacity: 1;
-            color: #0b7815;
-        }
-
-        .status-item.completed::before {
-            content: '✓';
-        }
-
         #formContainer {
             display: none;
             background: white;
@@ -324,19 +273,8 @@
     <!-- Loading State -->
     <div id="loadingContainer">
         <div class="spinner"></div>
-        <div class="loading-text">Initialising...</div>
-        <div class="loading-subtext">Connecting to underwriter services</div>
-
-        <div class="progress-container" id="progressContainer">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-
-        <ul class="status-list" id="statusList">
-            <li class="status-item" id="status-email">Collecting email data</li>
-            <li class="status-item" id="status-flow">Triggering workflow</li>
-            <li class="status-item" id="status-extract">Extracting form data</li>
-            <li class="status-item" id="status-render">Loading form</li>
-        </ul>
+        <div class="loading-text">Triggering underwriting flow...</div>
+        <div class="loading-subtext">Please wait while we extract form data</div>
     </div>
 
     <!-- Form Container -->
