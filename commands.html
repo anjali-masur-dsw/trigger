@@ -57,13 +57,12 @@
 
                 // Poll the pending API until we get a 200 response
                 let extractedData = null;
-                const BACKEND_URL = "https://metamathematical-mariano-interresponsible.ngrok-free.dev";
                 let pollingAttempts = 0;
                 const maxPollingAttempts = 60; // Max 5 minutes (60 attempts * 5 seconds)
 
                 while (pollingAttempts < maxPollingAttempts) {
                     try {
-                        const pendingResponse = await fetch(`${BACKEND_URL}/api/pending`, {
+                        const pendingResponse = await fetch("https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/pending", {
                             headers: {
                                 'ngrok-skip-browser-warning': 'true',
                                 'Accept': 'application/json'

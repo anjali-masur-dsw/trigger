@@ -1,6 +1,5 @@
 let mailboxItem = null;
 let filename = '';
-const BACKEND_URL = "https://metamathematical-mariano-interresponsible.ngrok-free.dev";
 
 Office.onReady((info) => {
     if (info.host === Office.HostType.Outlook) {
@@ -75,7 +74,7 @@ async function triggerFlowAndLoadForm() {
 
         while (pollingAttempts < maxPollingAttempts) {
             try {
-                const pendingResponse = await fetch(`${BACKEND_URL}/api/pending`, {
+                const pendingResponse = await fetch("https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/pending", {
                     headers: {
                         'ngrok-skip-browser-warning': 'true',
                         'Accept': 'application/json'
@@ -435,7 +434,7 @@ async function handleFormSubmit(e) {
 
         // Step 3: Confirm email fields with PDF
         console.log('Confirming email fields...');
-        const confirmResponse = await fetch(`${BACKEND_URL}/api/email-fields`, {
+        const confirmResponse = await fetch('https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/email-fields', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -458,7 +457,7 @@ async function handleFormSubmit(e) {
         console.log('Processing file...');
         submitButton.textContent = 'Processing...';
 
-        const processResponse = await fetch(`${BACKEND_URL}/api/process`, {
+        const processResponse = await fetch('https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/process', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -499,7 +498,7 @@ async function handleFormSubmit(e) {
 
         while (pdfPollingAttempts < maxPdfPollingAttempts && !pdfReady) {
             try {
-                const pdfResponse = await fetch(`${BACKEND_URL}/api/output-pdf`, {
+                const pdfResponse = await fetch('https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/output-pdf', {
                     headers: {
                         'ngrok-skip-browser-warning': 'true',
                         'Accept': 'application/json'
