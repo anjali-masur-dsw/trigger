@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,13 +39,8 @@
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .loading-text {
@@ -70,15 +64,8 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .header {
@@ -249,7 +236,6 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -266,9 +252,52 @@
             font-weight: 600;
             font-size: 13px;
         }
+
+        /* Success Summary Styles */
+        .success-summary {
+            display: none;
+            padding: 30px 20px;
+            background: white;
+            border-bottom: 1px solid #edebe9;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        .success-summary-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #0b7815 0%, #107c10 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(11, 120, 21, 0.2);
+        }
+
+        .success-text h3 {
+            color: #323130;
+            font-size: 18px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .success-text p {
+            color: #605e5c;
+            font-size: 14px;
+            line-height: 1.5;
+        }
     </style>
 </head>
-
 <body>
     <!-- Loading State -->
     <div id="loadingContainer">
@@ -283,10 +312,10 @@
             <div class="header-top">
                 <div class="logo">
                     <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="6" y="6" width="16" height="16" rx="2" fill="#f9a825" />
-                        <rect x="26" y="6" width="16" height="16" rx="2" fill="#f9a825" />
-                        <rect x="6" y="26" width="16" height="16" rx="2" fill="#f9a825" />
-                        <rect x="26" y="26" width="16" height="16" rx="2" fill="#fdd835" />
+                        <rect x="6" y="6" width="16" height="16" rx="2" fill="#f9a825"/>
+                        <rect x="26" y="6" width="16" height="16" rx="2" fill="#f9a825"/>
+                        <rect x="6" y="26" width="16" height="16" rx="2" fill="#f9a825"/>
+                        <rect x="26" y="26" width="16" height="16" rx="2" fill="#fdd835"/>
                     </svg>
                 </div>
                 <h1 class="form-title">Insurance Policy Information</h1>
@@ -304,79 +333,136 @@
                     <label class="form-label" for="brokerEmail">
                         Sender's Email <span class="required">*</span>
                     </label>
-                    <input type="email" id="brokerEmail" name="brokerEmail" class="form-input"
-                        placeholder="sender@example.com" required>
+                    <input 
+                        type="email" 
+                        id="brokerEmail" 
+                        name="brokerEmail" 
+                        class="form-input" 
+                        placeholder="sender@example.com"
+                        required
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="brokerName">
                         Sender's Name <span class="required">*</span>
                     </label>
-                    <input type="text" id="brokerName" name="brokerName" class="form-input"
-                        placeholder="Enter sender name" required>
+                    <input 
+                        type="text" 
+                        id="brokerName" 
+                        name="brokerName" 
+                        class="form-input" 
+                        placeholder="Enter sender name"
+                        required
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="underwriterEmail">
                         Receiver's Email <span class="required">*</span>
                     </label>
-                    <input type="email" id="underwriterEmail" name="underwriterEmail" class="form-input"
-                        placeholder="receiver@example.com" required>
+                    <input 
+                        type="email" 
+                        id="underwriterEmail" 
+                        name="underwriterEmail" 
+                        class="form-input" 
+                        placeholder="receiver@example.com"
+                        required
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="underwriterName">
                         Receiver's Name <span class="required">*</span>
                     </label>
-                    <input type="text" id="underwriterName" name="underwriterName" class="form-input"
-                        placeholder="Enter receiver name" required>
+                    <input 
+                        type="text" 
+                        id="underwriterName" 
+                        name="underwriterName" 
+                        class="form-input" 
+                        placeholder="Enter receiver name"
+                        required
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="policyNumber">
                         Policy Number <span class="required">*</span>
                     </label>
-                    <input type="text" id="policyNumber" name="policyNumber" class="form-input"
-                        placeholder="Enter policy number" required>
+                    <input 
+                        type="text" 
+                        id="policyNumber" 
+                        name="policyNumber" 
+                        class="form-input" 
+                        placeholder="Enter policy number"
+                        required
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="agencyName">
                         Agency Name
                     </label>
-                    <input type="text" id="agencyName" name="agencyName" class="form-input"
-                        placeholder="Enter agency name">
+                    <input 
+                        type="text" 
+                        id="agencyName" 
+                        name="agencyName" 
+                        class="form-input" 
+                        placeholder="Enter agency name"
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="agencyId">
                         Agency/Broker ID
                     </label>
-                    <input type="text" id="agencyId" name="agencyId" class="form-input"
-                        placeholder="Enter agency or broker ID">
+                    <input 
+                        type="text" 
+                        id="agencyId" 
+                        name="agencyId" 
+                        class="form-input" 
+                        placeholder="Enter agency or broker ID"
+                    >
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="emailSummary">
                         Email Summary
                     </label>
-                    <textarea id="emailSummary" name="emailSummary" class="form-input" rows="4"
-                        placeholder="Summary of the email content"></textarea>
+                    <textarea 
+                        id="emailSummary" 
+                        name="emailSummary" 
+                        class="form-input" 
+                        rows="4"
+                        placeholder="Summary of the email content"
+                    ></textarea>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="comments">
                         Comments
                     </label>
-                    <textarea id="comments" name="comments" class="form-input" rows="3"
-                        placeholder="Additional comments"></textarea>
+                    <textarea 
+                        id="comments" 
+                        name="comments" 
+                        class="form-input" 
+                        rows="3"
+                        placeholder="Additional comments"
+                    ></textarea>
                 </div>
 
                 <div class="form-section">
                     <label class="form-label" for="timestamp">
                         Timestamp
                     </label>
-                    <input type="text" id="timestamp" name="timestamp" class="form-input" disabled readonly>
+                    <input 
+                        type="text" 
+                        id="timestamp" 
+                        name="timestamp" 
+                        class="form-input" 
+                        disabled
+                        readonly
+                    >
                     <p class="input-hint">Auto-generated timestamp</p>
                 </div>
             </div>
@@ -389,5 +475,4 @@
 
     <script src="taskpane.js"></script>
 </body>
-
 </html>

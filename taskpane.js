@@ -1,5 +1,6 @@
 let mailboxItem = null;
 let filename = '';
+let processingType = ''; // 'claims' or 'underwriting'
 
 Office.onReady((info) => {
     if (info.host === Office.HostType.Outlook) {
@@ -74,7 +75,10 @@ async function triggerFlowAndLoadForm() {
 
         while (pollingAttempts < maxPollingAttempts) {
             try {
-                const pendingResponse = await fetch(" https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/pending", {
+                // Note: At this stage we don't know the processing type yet,
+                // so we try /api/pending first (underwriting default)
+                // The processing_type will be determined once we get the data
+                const pendingResponse = await fetch("https://corinne-unstudded-uneugenically.ngrok-free.dev/api/pending", {
                     headers: {
                         'ngrok-skip-browser-warning': 'true',
                         'Accept': 'application/json'
@@ -85,9 +89,20 @@ async function triggerFlowAndLoadForm() {
                     const data = await pendingResponse.json();
                     console.log("Pending API response:", data);
 
-                    if (data.success && data.count > 0 && data.files && data.files.length > 0) {
-                        extractedData = data.files[0];
+                    // Check for unified API response format (single object)
+                    if (data.success && data.session_id && data.extracted_data) {
+                        extractedData = data.extracted_data;
+                        // Add session_id to the data for tracking
+                        extractedData.session_id = data.session_id;
+                        extractedData.processing_type = data.processing_type;
+
                         console.log("Extracted data received:", extractedData);
+                        break;
+                    }
+                    // Fallback for legacy format (files array)
+                    else if (data.success && data.files && data.files.length > 0) {
+                        extractedData = data.files[0];
+                        console.log("Extracted data received (legacy):", extractedData);
                         break;
                     }
                 }
@@ -158,6 +173,20 @@ function populateForm(extractedData) {
     // Store filename for later submission
     filename = extractedData.filename || '';
 
+    // Detect processing type based on filename prefix
+    if (filename) {
+        if (filename.toLowerCase().startsWith('c')) {
+            processingType = 'claims';
+            console.log('Processing type detected: CLAIMS');
+        } else if (filename.toLowerCase().startsWith('acord')) {
+            processingType = 'underwriting';
+            console.log('Processing type detected: UNDERWRITING');
+        } else {
+            processingType = 'underwriting'; // default
+            console.log('Processing type defaulted to: UNDERWRITING');
+        }
+    }
+
     // Get email_fields from the extracted data
     const data = extractedData.email_fields || extractedData.extracted_data || {};
 
@@ -198,6 +227,62 @@ function populateForm(extractedData) {
             hour12: true
         });
     }
+}
+
+// Collapse form permanently after successful submission
+function collapseForm() {
+    const formContainer = document.getElementById('formContainer');
+    const formBody = document.querySelector('.form-body');
+    const submitSection = document.querySelector('.submit-section');
+    const header = document.querySelector('.header');
+    const successMessage = document.getElementById('successMessage');
+
+    console.log('Collapsing form...');
+
+    // Hide form body, submit section, and success message
+    if (formBody) {
+        formBody.style.display = 'none';
+        console.log('Form body hidden');
+    }
+    if (submitSection) {
+        submitSection.style.display = 'none';
+        console.log('Submit section hidden');
+    }
+    if (successMessage) {
+        successMessage.classList.remove('show');
+        successMessage.style.display = 'none';
+        console.log('Success message hidden');
+    }
+
+    // Add collapsed state styling
+    if (formContainer) {
+        formContainer.style.transition = 'all 0.3s ease';
+    }
+
+    // Create or update success summary
+    let successSummary = document.getElementById('successSummary');
+    if (!successSummary) {
+        successSummary = document.createElement('div');
+        successSummary.id = 'successSummary';
+        successSummary.className = 'success-summary';
+        successSummary.innerHTML = `
+            <div class="success-summary-content">
+                <div class="success-icon">✓</div>
+                <div class="success-text">
+                    <h3>Form Submitted Successfully</h3>
+                    <p>Your insurance policy information has been processed and the report has been generated.</p>
+                </div>
+            </div>
+        `;
+
+        // Insert after header
+        if (header && header.parentNode) {
+            header.parentNode.insertBefore(successSummary, header.nextSibling);
+        }
+    }
+
+    successSummary.style.display = 'block';
+    console.log('Success summary displayed');
 }
 
 async function getEmailData() {
@@ -434,7 +519,10 @@ async function handleFormSubmit(e) {
 
         // Step 3: Confirm email fields with PDF
         console.log('Confirming email fields...');
-        const confirmResponse = await fetch(' https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/email-fields', {
+        const apiPrefix = processingType === 'claims' ? '/claims-api' : '/api';
+        console.log(`Using API prefix: ${apiPrefix}`);
+        
+        const confirmResponse = await fetch(`https://corinne-unstudded-uneugenically.ngrok-free.dev${apiPrefix}/email-fields`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -457,7 +545,7 @@ async function handleFormSubmit(e) {
         console.log('Processing file...');
         submitButton.textContent = 'Processing...';
 
-        const processResponse = await fetch(' https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/process', {
+        const processResponse = await fetch(`https://corinne-unstudded-uneugenically.ngrok-free.dev${apiPrefix}/process`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -475,17 +563,6 @@ async function handleFormSubmit(e) {
         const result = await processResponse.json();
         console.log('Processing successful:', result);
 
-        // Show persistent notification in email view
-        Office.context.mailbox.item.notificationMessages.addAsync(
-            "processSuccess",
-            {
-                type: "informationalMessage",
-                message: "Email processed successfully! ✓",
-                icon: "Icon.80x80",
-                persistent: true
-            }
-        );
-
         successMessage.textContent = '✓ Form submitted successfully! Generating report...';
         successMessage.classList.add('show');
         submitButton.textContent = 'Generating Report...';
@@ -498,7 +575,7 @@ async function handleFormSubmit(e) {
 
         while (pdfPollingAttempts < maxPdfPollingAttempts && !pdfReady) {
             try {
-                const pdfResponse = await fetch(' https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/output-pdf', {
+                const pdfResponse = await fetch(`https://corinne-unstudded-uneugenically.ngrok-free.dev${apiPrefix}/output-pdf`, {
                     headers: {
                         'ngrok-skip-browser-warning': 'true',
                         'Accept': 'application/json'
@@ -548,13 +625,26 @@ async function handleFormSubmit(e) {
             successMessage.textContent = '✓ Email processed successfully! Report is still processing...';
         }
 
-        submitButton.textContent = 'Submitted';
+        // Show persistent notification in email view
+        Office.context.mailbox.item.notificationMessages.addAsync(
+            "processSuccess",
+            {
+                type: "informationalMessage",
+                message: "Email processed successfully! ✓",
+                icon: "Icon.80x80",
+                persistent: true
+            }
+        );
 
+        // Keep button as "Processed" and disabled permanently
+        submitButton.textContent = 'Processed';
+        submitButton.disabled = true;
+
+        // Close the taskpane after showing success notification
         setTimeout(() => {
-            successMessage.classList.remove('show');
-            submitButton.disabled = false;
-            submitButton.textContent = 'Submit';
-        }, 3000);
+            console.log('Closing taskpane...');
+            Office.context.ui.closeContainer();
+        }, 2000);
 
     } catch (error) {
         console.error('Error submitting form:', error);

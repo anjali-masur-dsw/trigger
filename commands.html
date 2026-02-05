@@ -1,390 +1,388 @@
-<!DOCTYPE html>
-<html>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
-</head>
-
-<body>
+    <body>
     <script>
-        Office.onReady(() => {
-            console.log("Commands.html loaded");
-        });
+    Office.onReady(() => {
+        console.log("Commands.html loaded");
+    });
 
-        /* =====================================================
-        RIBBON ACTION
-        ===================================================== */
-        async function triggerFlowFromRibbon(event) {
-            try {
-                Office.context.mailbox.item.notificationMessages.addAsync(
-                    "progress",
-                    {
-                        type: "progressIndicator",
-                        message: "Analyzing email and sending to workflow..."
-                    }
-                );
-
-                const emailData = await getEmailData();
-
-                const flowUrl =
-                    "https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/89c12382226642a4907cd110e9e7ab87/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Nbz7sUIbNoHlSBt_KVnF3CFKCCf9lPYn-LbIxZsWouA";
-                const response = await fetch(flowUrl, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(emailData)
-                });
-
-                Office.context.mailbox.item.notificationMessages.removeAsync("progress");
-
-                if (!response.ok) {
-                    const err = await response.text();
-                    throw new Error(`HTTP ${response.status}: ${err}`);
+    /* =====================================================
+    RIBBON ACTION
+    ===================================================== */
+    async function triggerFlowFromRibbon(event) {
+        try {
+            Office.context.mailbox.item.notificationMessages.addAsync(
+                "progress",
+                {
+                    type: "progressIndicator",
+                    message: "Analyzing email and sending to workflow..."
                 }
+            );
 
-                // ===== STEP 1: Poll the pending API and open insurance form =====
-                // Show processing message for form data
+            const emailData = await getEmailData();
+
+            const flowUrl =
+                "https://default74afe875305e4ab4ba4ac1359a7629.ae.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/89c12382226642a4907cd110e9e7ab87/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Nbz7sUIbNoHlSBt_KVnF3CFKCCf9lPYn-LbIxZsWouA";
+            const response = await fetch(flowUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(emailData)
+            });
+
+            Office.context.mailbox.item.notificationMessages.removeAsync("progress");
+
+            if (!response.ok) {
+                const err = await response.text();
+                throw new Error(`HTTP ${response.status}: ${err}`);
+            }
+
+            // ===== STEP 1: Poll the pending API and open insurance form =====
+            // Show processing message for form data
+            Office.context.mailbox.item.notificationMessages.addAsync(
+                "formProcessing",
+                {
+                    type: "informationalMessage",
+                    message: "Extracting form data...",
+                    icon: "Icon.80x80",
+                    persistent: true
+                }
+            );
+
+            // Poll the pending API until we get a 200 response
+            let extractedData = null;
+            let pollingAttempts = 0;
+            const maxPollingAttempts = 60; // Max 5 minutes (60 attempts * 5 seconds)
+            
+            while (pollingAttempts < maxPollingAttempts) {
+                try {
+                    const pendingResponse = await fetch("https://corinne-unstudded-uneugenically.ngrok-free.dev/api/pending", {
+                        headers: {
+                            'ngrok-skip-browser-warning': 'true',
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (pendingResponse.ok) {
+                        const data = await pendingResponse.json();
+                        console.log("Pending API response:", data);
+                        
+                        if (data.success && data.count > 0 && data.files && data.files.length > 0) {
+                            extractedData = data.files[0];
+                            console.log("Extracted data received:", extractedData);
+                            break;
+                        }
+                    }
+                } catch (pollError) {
+                    console.warn("Polling attempt failed:", pollError.message);
+                }
+                
+                // Wait 5 seconds before next attempt
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                pollingAttempts++;
+            }
+
+            // Remove form processing message
+            Office.context.mailbox.item.notificationMessages.removeAsync("formProcessing");
+
+            if (extractedData) {
+                // Show success message for form data
                 Office.context.mailbox.item.notificationMessages.addAsync(
-                    "formProcessing",
+                    "formSuccess",
                     {
                         type: "informationalMessage",
-                        message: "Extracting form data...",
+                        message: "Form data extracted! Opening insurance form...",
                         icon: "Icon.80x80",
-                        persistent: true
+                        persistent: false
                     }
                 );
 
-                // Poll the pending API until we get a 200 response
-                let extractedData = null;
-                let pollingAttempts = 0;
-                const maxPollingAttempts = 60; // Max 5 minutes (60 attempts * 5 seconds)
-
-                while (pollingAttempts < maxPollingAttempts) {
-                    try {
-                        const pendingResponse = await fetch(" https://metamathematical-mariano-interresponsible.ngrok-free.dev/api/pending", {
-                            headers: {
-                                'ngrok-skip-browser-warning': 'true',
-                                'Accept': 'application/json'
-                            }
-                        });
-
-                        if (pendingResponse.ok) {
-                            const data = await pendingResponse.json();
-                            console.log("Pending API response:", data);
-
-                            if (data.success && data.count > 0 && data.files && data.files.length > 0) {
-                                extractedData = data.files[0];
-                                console.log("Extracted data received:", extractedData);
-                                break;
-                            }
-                        }
-                    } catch (pollError) {
-                        console.warn("Polling attempt failed:", pollError.message);
-                    }
-
-                    // Wait 5 seconds before next attempt
-                    await new Promise(resolve => setTimeout(resolve, 5000));
-                    pollingAttempts++;
-                }
-
-                // Remove form processing message
-                Office.context.mailbox.item.notificationMessages.removeAsync("formProcessing");
-
-                if (extractedData) {
-                    // Show success message for form data
+                // Build URL with query parameters for insurance form
+                const formUrl = buildInsuranceFormUrl(extractedData);
+                
+                // Open the insurance form in the taskpane
+                console.log("Opening form in taskpane...");
+                try {
                     Office.context.mailbox.item.notificationMessages.addAsync(
-                        "formSuccess",
+                        "taskpaneOpening",
                         {
                             type: "informationalMessage",
-                            message: "Form data extracted! Opening insurance form...",
+                            message: "Opening form in taskpane...",
                             icon: "Icon.80x80",
                             persistent: false
                         }
                     );
 
-                    // Build URL with query parameters for insurance form
-                    const formUrl = buildInsuranceFormUrl(extractedData);
-
-                    // Open the insurance form in the taskpane
-                    console.log("Opening form in taskpane...");
-                    try {
-                        Office.context.mailbox.item.notificationMessages.addAsync(
-                            "taskpaneOpening",
-                            {
-                                type: "informationalMessage",
-                                message: "Opening form in taskpane...",
-                                icon: "Icon.80x80",
-                                persistent: false
+                    // Open taskpane with form URL
+                    Office.context.ui.displayDialogAsync(
+                        formUrl,
+                        { height: 90, width: 50, displayInIframe: true },
+                        (result) => {
+                            if (result.status === Office.AsyncResultStatus.Failed) {
+                                console.error("Failed to open form:", result.error.message);
+                                Office.context.mailbox.item.notificationMessages.addAsync(
+                                    "formError",
+                                    {
+                                        type: "errorMessage",
+                                        message: "Failed to open form: " + result.error.message
+                                    }
+                                );
+                            } else {
+                                console.log("Form opened successfully in dialog");
                             }
-                        );
-
-                        // Open taskpane with form URL
-                        Office.context.ui.displayDialogAsync(
-                            formUrl,
-                            { height: 90, width: 50, displayInIframe: true },
-                            (result) => {
-                                if (result.status === Office.AsyncResultStatus.Failed) {
-                                    console.error("Failed to open form:", result.error.message);
-                                    Office.context.mailbox.item.notificationMessages.addAsync(
-                                        "formError",
-                                        {
-                                            type: "errorMessage",
-                                            message: "Failed to open form: " + result.error.message
-                                        }
-                                    );
-                                } else {
-                                    console.log("Form opened successfully in dialog");
-                                }
-                            }
-                        );
-                    } catch (e) {
-                        console.error("Error opening form:", e);
-                        Office.context.mailbox.item.notificationMessages.addAsync(
-                            "formError",
-                            {
-                                type: "errorMessage",
-                                message: "Error opening form: " + e.message
-                            }
-                        );
-                    }
-                } else {
-                    console.warn("Timeout: Form data extraction did not complete in time");
-                }
-
-            } catch (error) {
-                console.error(error);
-
-                Office.context.mailbox.item.notificationMessages.removeAsync("progress");
-
-                Office.context.mailbox.item.notificationMessages.addAsync(
-                    "error",
-                    {
-                        type: "errorMessage",
-                        message: "Processing failed: " + error.message
-                    }
-                );
-            } finally {
-                event.completed();
-            }
-        }
-
-        /* =====================================================
-        BUILD INSURANCE FORM URL WITH EXTRACTED DATA
-        ===================================================== */
-        function buildInsuranceFormUrl(extractedData) {
-            const baseUrl = "https://anjali-masur-dsw.github.io/trigger/insurance_form.html";
-            const params = new URLSearchParams();
-
-            // Store filename for later submission
-            if (extractedData.filename) {
-                params.append('filename', extractedData.filename);
-            }
-
-            // Map extracted data fields to form fields - use email_fields instead of extracted_data
-            const data = extractedData.email_fields || extractedData.extracted_data || {};
-
-            console.log("Building form URL with data:", data);
-
-            if (data.broker_email) params.append('brokerEmail', data.broker_email);
-            if (data.broker_name) params.append('brokerName', data.broker_name);
-            if (data.underwriter_email) params.append('underwriterEmail', data.underwriter_email);
-            if (data.underwriter_name) params.append('underwriterName', data.underwriter_name);
-            if (data.policy_number) params.append('policyNumber', data.policy_number);
-            if (data.broker_agency_name) params.append('agencyName', data.broker_agency_name);
-            if (data.broker_agency_id || data.agency_id) params.append('agencyId', data.broker_agency_id || data.agency_id);
-            if (extractedData.detected_at) params.append('timestamp', extractedData.detected_at);
-
-            const fullUrl = `${baseUrl}?${params.toString()}`;
-            console.log("Form URL generated:", fullUrl);
-            return fullUrl;
-        }
-
-        /* =====================================================
-        EMAIL DATA COLLECTION
-        ===================================================== */
-        async function getEmailData() {
-            const item = Office.context.mailbox.item;
-
-            if (!item) throw new Error("No email context");
-
-            const subject = await getSubject(item);
-            const body = await getBody(item);
-            const attachments = await getAttachmentContents(item);
-
-            // Get email identifiers
-            const itemId = item.itemId || "";
-            let conversationId = "";
-
-            // Try to get conversation ID
-            if (item.conversationId) {
-                conversationId = item.conversationId;
-            } else if (item.itemId) {
-                // Some versions don't expose conversationId directly
-                conversationId = "";
-            }
-
-            console.log("Item ID (EWS format):", itemId);
-            console.log("Conversation ID:", conversationId);
-            console.log("Internet Message ID:", item.internetMessageId);
-            console.log("All available properties:", Object.keys(item));
-
-            return {
-                triggeredAt: new Date().toISOString(),
-
-                userEmail: Office.context.mailbox.userProfile.emailAddress || "",
-
-                subject: subject,
-                body: body,
-
-                from: getSender(item),
-
-                receivedDateTime:
-                    item.dateTimeCreated ||
-                    item.dateTimeModified ||
-                    new Date().toISOString(),
-
-                internetMessageId: item.internetMessageId || "",
-
-                itemId: itemId,
-                conversationId: conversationId,
-
-                hasAttachments: attachments.length > 0,
-                attachmentCount: attachments.length,
-                attachments: attachments
-            };
-        }
-
-        /* =====================================================
-        HELPERS
-        ===================================================== */
-        function getSubject(item) {
-            return new Promise(resolve => {
-                if (typeof item.subject === "string") {
-                    resolve(item.subject);
-                } else {
-                    item.subject.getAsync(result =>
-                        resolve(result.status === Office.AsyncResultStatus.Succeeded
-                            ? result.value
-                            : "Subject unavailable")
+                        }
+                    );
+                } catch (e) {
+                    console.error("Error opening form:", e);
+                    Office.context.mailbox.item.notificationMessages.addAsync(
+                        "formError",
+                        {
+                            type: "errorMessage",
+                            message: "Error opening form: " + e.message
+                        }
                     );
                 }
-            });
-        }
+            } else {
+                console.warn("Timeout: Form data extraction did not complete in time");
+            }
 
-        function getBody(item) {
-            return new Promise(resolve => {
-                item.body.getAsync(Office.CoercionType.Text, result =>
+        } catch (error) {
+            console.error(error);
+
+            Office.context.mailbox.item.notificationMessages.removeAsync("progress");
+
+            Office.context.mailbox.item.notificationMessages.addAsync(
+                "error",
+                {
+                    type: "errorMessage",
+                    message: "Processing failed: " + error.message
+                }
+            );
+        } finally {
+            event.completed();
+        }
+    }
+
+    /* =====================================================
+    BUILD INSURANCE FORM URL WITH EXTRACTED DATA
+    ===================================================== */
+    function buildInsuranceFormUrl(extractedData) {
+        const baseUrl = "https://karan-dsw.github.io/outlook/insurance_form.html";
+        const params = new URLSearchParams();
+        
+        // Store filename for later submission
+        if (extractedData.filename) {
+            params.append('filename', extractedData.filename);
+        }
+        
+        // Map extracted data fields to form fields - use email_fields instead of extracted_data
+        const data = extractedData.email_fields || extractedData.extracted_data || {};
+        
+        console.log("Building form URL with data:", data);
+        
+        if (data.broker_email) params.append('brokerEmail', data.broker_email);
+        if (data.broker_name) params.append('brokerName', data.broker_name);
+        if (data.underwriter_email) params.append('underwriterEmail', data.underwriter_email);
+        if (data.underwriter_name) params.append('underwriterName', data.underwriter_name);
+        if (data.policy_number) params.append('policyNumber', data.policy_number);
+        if (data.broker_agency_name) params.append('agencyName', data.broker_agency_name);
+        if (data.broker_agency_id || data.agency_id) params.append('agencyId', data.broker_agency_id || data.agency_id);
+        if (extractedData.detected_at) params.append('timestamp', extractedData.detected_at);
+        
+        const fullUrl = `${baseUrl}?${params.toString()}`;
+        console.log("Form URL generated:", fullUrl);
+        return fullUrl;
+    }
+
+    /* =====================================================
+    EMAIL DATA COLLECTION
+    ===================================================== */
+    async function getEmailData() {
+        const item = Office.context.mailbox.item;
+
+        if (!item) throw new Error("No email context");
+
+        const subject = await getSubject(item);
+        const body = await getBody(item);
+        const attachments = await getAttachmentContents(item);
+
+        // Get email identifiers
+        const itemId = item.itemId || "";
+        let conversationId = "";
+        
+        // Try to get conversation ID
+        if (item.conversationId) {
+            conversationId = item.conversationId;
+        } else if (item.itemId) {
+            // Some versions don't expose conversationId directly
+            conversationId = "";
+        }
+        
+        console.log("Item ID (EWS format):", itemId);
+        console.log("Conversation ID:", conversationId);
+        console.log("Internet Message ID:", item.internetMessageId);
+        console.log("All available properties:", Object.keys(item));
+
+        return {
+            triggeredAt: new Date().toISOString(),
+
+            userEmail: Office.context.mailbox.userProfile.emailAddress || "",
+
+            subject: subject,
+            body: body,
+
+            from: getSender(item),
+
+            receivedDateTime:
+                item.dateTimeCreated ||
+                item.dateTimeModified ||
+                new Date().toISOString(),
+
+            internetMessageId: item.internetMessageId || "",
+
+            itemId: itemId,
+            conversationId: conversationId,
+
+            hasAttachments: attachments.length > 0,
+            attachmentCount: attachments.length,
+            attachments: attachments
+        };
+    }
+
+    /* =====================================================
+    HELPERS
+    ===================================================== */
+    function getSubject(item) {
+        return new Promise(resolve => {
+            if (typeof item.subject === "string") {
+                resolve(item.subject);
+            } else {
+                item.subject.getAsync(result =>
                     resolve(result.status === Office.AsyncResultStatus.Succeeded
                         ? result.value
-                        : "Body unavailable")
+                        : "Subject unavailable")
                 );
-            });
-        }
-
-        function getSender(item) {
-            if (!item.from) return "Unknown";
-
-            if (typeof item.from === "string") return item.from;
-            if (item.from.emailAddress) return item.from.emailAddress;
-            if (item.from.displayName) return item.from.displayName;
-
-            return "Unknown";
-        }
-
-        /* =====================================================
-        ATTACHMENT CONTENT (BASE64)
-        ===================================================== */
-        async function getAttachmentContents(item) {
-            if (!item.attachments || item.attachments.length === 0) {
-                return [];
             }
+        });
+    }
 
-            const results = [];
+    function getBody(item) {
+        return new Promise(resolve => {
+            item.body.getAsync(Office.CoercionType.Text, result =>
+                resolve(result.status === Office.AsyncResultStatus.Succeeded
+                    ? result.value
+                    : "Body unavailable")
+            );
+        });
+    }
 
-            for (const att of item.attachments) {
-                console.log(`Processing attachment: ${att.name}, ID: ${att.id}`);
+    function getSender(item) {
+        if (!item.from) return "Unknown";
 
-                try {
-                    await new Promise(resolve => {
-                        item.getAttachmentContentAsync(att.id, res => {
-                            if (res.status === Office.AsyncResultStatus.Succeeded) {
-                                console.log(`Successfully retrieved ${att.name}, content length: ${res.value.content.length}`);
-                                results.push({
-                                    id: att.id,
-                                    name: att.name,
-                                    contentType: att.contentType,
-                                    size: att.size,
-                                    content: res.value.content,
-                                    format: res.value.format
-                                });
-                            } else {
-                                console.error(`Failed to retrieve ${att.name}:`, res.error);
-                                results.push({
-                                    id: att.id,
-                                    name: att.name,
-                                    error: res.error ? res.error.message : 'Unknown error'
-                                });
-                            }
-                            resolve();
-                        });
-                    });
-                } catch (error) {
-                    console.error(`Exception retrieving ${att.name}:`, error);
-                    results.push({
-                        id: att.id,
-                        name: att.name,
-                        error: error.message
-                    });
-                }
-            }
+        if (typeof item.from === "string") return item.from;
+        if (item.from.emailAddress) return item.from.emailAddress;
+        if (item.from.displayName) return item.from.displayName;
 
-            console.log(`Total attachments processed: ${results.length}`);
-            return results;
+        return "Unknown";
+    }
+
+    /* =====================================================
+    ATTACHMENT CONTENT (BASE64)
+    ===================================================== */
+    async function getAttachmentContents(item) {
+        if (!item.attachments || item.attachments.length === 0) {
+            return [];
         }
 
-        /* =====================================================
-        GET FRESH CALLBACK TOKEN
-        ===================================================== */
-        async function getCallbackToken() {
-            return new Promise((resolve) => {
-                Office.context.mailbox.getCallbackTokenAsync({ isRest: true }, (result) => {
-                    if (result.status === Office.AsyncResultStatus.Succeeded) {
-                        resolve(result.value);
-                    } else {
-                        console.error('Error getting callback token:', result.error);
-                        resolve(null);
-                    }
+        const results = [];
+
+        for (const att of item.attachments) {
+            console.log(`Processing attachment: ${att.name}, ID: ${att.id}`);
+            
+            try {
+                await new Promise(resolve => {
+                    item.getAttachmentContentAsync(att.id, res => {
+                        if (res.status === Office.AsyncResultStatus.Succeeded) {
+                            console.log(`Successfully retrieved ${att.name}, content length: ${res.value.content.length}`);
+                            results.push({
+                                id: att.id,
+                                name: att.name,
+                                contentType: att.contentType,
+                                size: att.size,
+                                content: res.value.content,
+                                format: res.value.format
+                            });
+                        } else {
+                            console.error(`Failed to retrieve ${att.name}:`, res.error);
+                            results.push({
+                                id: att.id,
+                                name: att.name,
+                                error: res.error ? res.error.message : 'Unknown error'
+                            });
+                        }
+                        resolve();
+                    });
                 });
-            });
+            } catch (error) {
+                console.error(`Exception retrieving ${att.name}:`, error);
+                results.push({
+                    id: att.id,
+                    name: att.name,
+                    error: error.message
+                });
+            }
         }
 
-        /* =====================================================
-        BLOB TO BASE64 CONVERTER
-        ===================================================== */
-        function blobToBase64(blob) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const base64data = reader.result.split(',')[1];
-                    resolve(base64data);
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-            });
-        }
+        console.log(`Total attachments processed: ${results.length}`);
+        return results;
+    }
 
-        /* =====================================================
-        REGISTER COMMAND
-        ===================================================== */
-        Office.actions.associate("triggerFlowFromRibbon", triggerFlowFromRibbon);
+    /* =====================================================
+    GET FRESH CALLBACK TOKEN
+    ===================================================== */
+    async function getCallbackToken() {
+        return new Promise((resolve) => {
+            Office.context.mailbox.getCallbackTokenAsync({ isRest: true }, (result) => {
+                if (result.status === Office.AsyncResultStatus.Succeeded) {
+                    resolve(result.value);
+                } else {
+                    console.error('Error getting callback token:', result.error);
+                    resolve(null);
+                }
+            });
+        });
+    }
+
+    /* =====================================================
+    BLOB TO BASE64 CONVERTER
+    ===================================================== */
+    function blobToBase64(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64data = reader.result.split(',')[1];
+                resolve(base64data);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    /* =====================================================
+    REGISTER COMMAND
+    ===================================================== */
+    Office.actions.associate("triggerFlowFromRibbon", triggerFlowFromRibbon);
     </script>
-</body>
+    </body>
+    </html>
 
-</html>
 
-
-<!-- <!DOCTYPE html>
+    <!-- <!DOCTYPE html>
     <html>
     <head>
         <meta charset="UTF-8" />
