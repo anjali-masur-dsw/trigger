@@ -10,7 +10,7 @@
   <ProviderName>Data Science Wizards</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="Auto Process"/>
-  <Description DefaultValue="Auto Process"/>
+  <Description DefaultValue="Auto Process Trigger"/>
   <IconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo64.png"/>
   <HighResolutionIconUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/logo128.png"/>
   <SupportUrl DefaultValue="https://anjali-masur-dsw.github.io/trigger/support"/>
@@ -103,7 +103,7 @@
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="Flow Actions"/>
         <bt:String id="TriggerButton.Label" DefaultValue="Auto Process"/>
-        <bt:String id="TriggerButton.SupertipTitle" DefaultValue="Trigger Power Automate"/>
+        <bt:String id="TriggerButton.SupertipTitle" DefaultValue="Auto Process Trigger"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="TriggerButton.SupertipText" DefaultValue="Analyze this email and trigger the Power Automate workflow for routing"/>
